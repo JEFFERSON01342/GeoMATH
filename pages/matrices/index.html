@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        GeoMath | Matrices
+    </title>
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+        href="../../assets/css/global.css">
+
+    <link rel="stylesheet"
+        href="../../assets/css/matrices.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ===================== -->
+    <!-- HEADER -->
+    <!-- ===================== -->
+    <header class="header-pro">
+
+        <nav class="navbar">
+
+            <div class="logo-area">
+
+                <h1>
+                    GeoMath
+                </h1>
+
+            </div>
+
+            <ul class="nav-links">
+
+                <li>
+                    <a href="../../index.html">
+                        Inicio
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../raices/index.html">
+                        Raíces
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../matrices/index.html"
+                        class="active">
+
+                        Matrices
+
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../taylor/index.html">
+                        Taylor
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+        <div class="hero-text">
+
+            <h2>
+                Matrix Solver
+            </h2>
+
+            <p>
+                Resuelve determinantes,
+                matrices y sistemas
+                lineales paso a paso.
+            </p>
+
+        </div>
+
+    </header>
+
+    <!-- ===================== -->
+    <!-- APP LAYOUT -->
+    <!-- ===================== -->
+    <main class="matrix-layout">
+
+        <!-- ===================== -->
+        <!-- CONTENIDO PRINCIPAL -->
+        <!-- ===================== -->
+        <section class="main-content">
+
+            <!-- ===================== -->
+            <!-- PANTALLA:
+            DETERMINANTES -->
+            <!-- ===================== -->
+            <section id="screen-determinants"
+                class="screen active-screen">
+
+                <!-- TITULO -->
+                <div class="card section-card">
+
+                    <div class="section-title">
+
+                        <h2>
+                            Determinantes
+                        </h2>
+
+                        <p>
+                            Calcula el determinante
+                            de una matriz paso a paso
+                            utilizando diferentes
+                            métodos matemáticos.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- ===================== -->
+                <!-- TAMANO MATRIZ -->
+                <!-- ===================== -->
+                <div class="card matrix-size-card">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fa-solid fa-expand"></i>
+
+                            Tamaño de matriz
+
+                        </h3>
+
+                    </div>
+
+                    <div class="matrix-size-control">
+
+                        <button id="remove-size">
+
+                            <i class="fa-solid fa-minus"></i>
+
+                        </button>
+
+                        <span id="matrix-size-display">
+
+                            3 × 3
+
+                        </span>
+
+                        <button id="add-size">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- ===================== -->
+                <!-- MATRIZ -->
+                <!-- ===================== -->
+                <div class="card matrix-card">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fa-solid fa-table"></i>
+
+                            Matriz A
+
+                        </h3>
+
+                    </div>
+
+                    <div class="matrix-area">
+
+                        <div class="matrix-name">
+
+                            A =
+
+                        </div>
+
+                        <div class="matrix-wrapper">
+
+                            <!-- BRACKET -->
+                            <div class="matrix-bracket left">
+
+                                (
+
+                            </div>
+
+                            <!-- MATRIZ -->
+                            <div id="matrix-container"
+                                class="matrix-grid">
+
+                                <!-- JS render -->
+
+                            </div>
+
+                            <!-- BRACKET -->
+                            <div class="matrix-bracket right">
+
+                                )
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ===================== -->
+                <!-- METODO -->
+                <!-- ===================== -->
+                <div class="card method-card">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fa-solid fa-calculator"></i>
+
+                            Método de resolución
+
+                        </h3>
+
+                    </div>
+
+                    <div class="method-select-wrapper">
+
+                        <select
+                            id="determinant-method"
+                            class="method-select">
+
+                            <option value="gauss">
+                                Método de Gauss
+                            </option>
+
+                            <option value="triangulation">
+                                Triangulación
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- ===================== -->
+                <!-- PROCEDIMIENTO -->
+                <!-- ===================== -->
+                <div class="card procedure-card">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fa-solid fa-list-ol"></i>
+
+                            Procedimiento
+                            paso a paso
+
+                        </h3>
+
+                    </div>
+
+                    <!-- BOTON -->
+                    <div class="solve-container">
+
+                        <button
+                            id="solve-determinant"
+                            class="solve-btn">
+
+                            <i
+                                class="fa-solid fa-play"></i>
+
+                            Resolver
+                            determinante
+
+                        </button>
+
+                    </div>
+
+                    <!-- RESULTADO -->
+                    <div
+                        id="determinant-result"
+                        class="determinant-result">
+
+                        <!-- JS renderiza -->
+
+                    </div>
+
+                    <!-- PROCEDIMIENTO -->
+                    <div
+                        id="procedure-content"
+                        class="procedure-content">
+
+                        <div
+                            class="procedure-placeholder">
+
+                            <i
+                                class="fa-solid fa-square-root-variable"></i>
+
+                            <h4>
+                                Aquí aparecerá
+                                la resolución
+                            </h4>
+
+                            <p>
+                                Presiona
+                                <strong>
+                                    Resolver
+                                    determinante
+                                </strong>
+                                para mostrar
+                                el procedimiento
+                                del método de Gauss
+                                paso a paso.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ===================== -->
+            <!-- PANTALLA:
+            OPERACIONES -->
+            <!-- ===================== -->
+            <section id="screen-operations"
+                class="screen">
+
+                <div class="card placeholder-card">
+
+                    <div
+                        class="placeholder-content">
+
+                        <i
+                            class="fa-solid fa-table-columns"></i>
+
+                        <h2>
+                            Operaciones
+                            con matrices
+                        </h2>
+
+                        <p>
+                            Esta sección
+                            estará disponible
+                            próximamente.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ===================== -->
+            <!-- PANTALLA:
+            SISTEMAS -->
+            <!-- ===================== -->
+            <section id="screen-systems"
+                class="screen">
+
+                <div class="card placeholder-card">
+
+                    <div
+                        class="placeholder-content">
+
+                        <i
+                            class="fa-solid fa-equals"></i>
+
+                        <h2>
+                            Sistemas de
+                            ecuaciones
+                        </h2>
+
+                        <p>
+                            Esta sección
+                            estará disponible
+                            próximamente.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <!-- ===================== -->
+        <!-- SIDEBAR -->
+        <!-- ===================== -->
+        <aside class="sidebar">
+
+            <div class="sidebar-header">
+
+                <h3>
+                    Herramientas
+                </h3>
+
+            </div>
+
+            <!-- DETERMINANTES -->
+            <button
+                class="sidebar-option active"
+                data-screen="determinants">
+
+                <i
+                    class="fa-solid fa-square-root-variable"></i>
+
+                <span>
+                    Determinantes
+                </span>
+
+            </button>
+
+            <!-- OPERACIONES -->
+            <button
+                class="sidebar-option"
+                data-screen="operations">
+
+                <i
+                    class="fa-solid fa-table"></i>
+
+                <span>
+                    Operaciones
+                    con matrices
+                </span>
+
+            </button>
+
+            <!-- SISTEMAS -->
+            <button
+                class="sidebar-option"
+                data-screen="systems">
+
+                <i
+                    class="fa-solid fa-equals"></i>
+
+                <span>
+                    Sistemas de
+                    ecuaciones
+                </span>
+
+            </button>
+
+        </aside>
+
+    </main>
+
+    <!-- FRACTIONS -->
+    <script src="https://cdn.jsdelivr.net/npm/fraction.js@4.3.7/fraction.min.js"></script>
+
+    <!-- ===================== -->
+    <!-- MATHJAX -->
+    <!-- ===================== -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']]
+            }
+        };
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script
+        src="../../assets/js/matrices/utils.js">
+    </script>
+
+    <script
+        src="../../assets/js/matrices/gauss-determinante.js">
+    </script>
+
+    <script
+        src="../../assets/js/matrices/triangulacion.js">
+    </script>
+
+    <script
+        src="../../assets/js/matrices/apariencia.js">
+    </script>
+
+</body>
+
+</html>
