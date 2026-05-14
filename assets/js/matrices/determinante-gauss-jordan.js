@@ -1,6 +1,6 @@
 /* ===================== */
 /* DETERMINANTE */
-/* METODO DE GAUSS */
+/* GAUSS JORDAN */
 /* ===================== */
 function determinantGaussian(originalMatrix){
 
@@ -26,7 +26,7 @@ function determinantGaussian(originalMatrix){
             "Matriz inicial",
 
         description:
-            "Se comienza con la matriz original.",
+            "Se comienza con la matriz original para aplicar el método de Gauss-Jordan.",
 
         matrix:
             cloneMatrix(A),
@@ -36,8 +36,8 @@ function determinantGaussian(originalMatrix){
     });
 
     /* ===================== */
-    /* ELIMINACION */
-/* ===================== */
+    /* GAUSS JORDAN */
+    /* ===================== */
     for(
         let i = 0;
         i < n;
@@ -45,7 +45,7 @@ function determinantGaussian(originalMatrix){
     ){
 
         /* ===================== */
-        /* PIVOTEO PARCIAL */
+        /* BUSCAR PIVOTE */
         /* ===================== */
         let pivotRow = i;
 
@@ -89,7 +89,7 @@ function determinantGaussian(originalMatrix){
         }
 
         /* ===================== */
-        /* INTERCAMBIO FILAS */
+        /* INTERCAMBIO */
         /* ===================== */
         if(
             pivotRow !== i
@@ -113,7 +113,7 @@ function determinantGaussian(originalMatrix){
                     `F${i+1} \\leftrightarrow F${pivotRow+1}`,
 
                 description:
-                    "Se intercambian filas para obtener un mejor pivote.",
+                    "Se intercambian filas para obtener un pivote válido.",
 
                 matrix:
                     cloneMatrix(A),
@@ -124,13 +124,70 @@ function determinantGaussian(originalMatrix){
         }
 
         /* ===================== */
-        /* ELIMINAR ABAJO */
+        /* GUARDAR PIVOTE */
+        /* ===================== */
+        const pivotValue =
+            new Fraction(
+                A[i][i]
+            );
+
+        determinant =
+            determinant.mul(
+                pivotValue
+            );
+
+        /* ===================== */
+        /* NORMALIZAR FILA */
         /* ===================== */
         for(
-            let j = i + 1;
+            let k = 0;
+            k < n;
+            k++
+        ){
+
+            A[i][k] =
+
+                A[i][k].div(
+                    pivotValue
+                );
+        }
+
+        steps.push({
+
+            operation:
+            `
+            F${i+1}
+            =
+            \\frac{
+                F${i+1}
+            }{
+                ${fractionToLatex(
+                    pivotValue
+                )}
+            }
+            `,
+
+            description:
+                "Se divide la fila pivote para convertir el pivote en 1.",
+
+            matrix:
+                cloneMatrix(A),
+
+            pivot:
+                i + 1
+        });
+
+        /* ===================== */
+        /* HACER CEROS */
+        /* ===================== */
+        for(
+            let j = 0;
             j < n;
             j++
         ){
+
+            if(j === i)
+                continue;
 
             if(
                 A[j][i]
@@ -140,13 +197,12 @@ function determinantGaussian(originalMatrix){
             }
 
             const factor =
-
-                A[j][i].div(
-                    A[i][i]
+                new Fraction(
+                    A[j][i]
                 );
 
             for(
-                let k = i;
+                let k = 0;
                 k < n;
                 k++
             ){
@@ -164,10 +220,17 @@ function determinantGaussian(originalMatrix){
             steps.push({
 
                 operation:
-                `F${j+1} = F${j+1} - (${factor.toFraction(true)})F${i+1}`,
+                `
+                F${j+1}
+                =
+                F${j+1}
+                -
+                (${fractionToLatex(factor)})
+                F${i+1}
+                `,
 
                 description:
-                    "Se elimina el valor debajo del pivote para triangular la matriz.",
+                    "Se elimina el valor de la columna pivote para formar la matriz identidad.",
 
                 matrix:
                     cloneMatrix(A),
@@ -179,23 +242,7 @@ function determinantGaussian(originalMatrix){
     }
 
     /* ===================== */
-    /* PRODUCTO DIAGONAL */
-    /* ===================== */
-    for(
-        let i = 0;
-        i < n;
-        i++
-    ){
-
-        determinant =
-
-            determinant.mul(
-                A[i][i]
-            );
-    }
-
-    /* ===================== */
-    /* CAMBIO DE SIGNO */
+    /* SIGNO */
     /* ===================== */
     if(
         swaps % 2 !== 0
@@ -206,7 +253,29 @@ function determinantGaussian(originalMatrix){
     }
 
     /* ===================== */
-    /* RETORNAR RESULTADO */
+    /* PASO FINAL */
+    /* ===================== */
+    steps.push({
+
+        operation:
+        `
+        A
+        \\rightarrow
+        I
+        `,
+
+        description:
+            "La matriz fue reducida a la identidad mediante Gauss-Jordan.",
+
+        matrix:
+            cloneMatrix(A),
+
+        pivot:
+            n
+    });
+
+    /* ===================== */
+    /* RESULTADO */
     /* ===================== */
     return {
 
