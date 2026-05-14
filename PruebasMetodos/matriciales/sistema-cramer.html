@@ -1,1 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Método de Cramer</title>
+
+<!-- Math.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
+
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<!-- MathQuill -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
+
+<!-- MathJax -->
+<script>
+window.MathJax = {
+    tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    min-height:100vh;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:2.5rem;
+}
+
+.panel{
+    max-width:1300px;
+    margin:auto;
+    background:#1e293b;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 0 25px rgba(0,0,0,0.35);
+}
+
+.controls{
+    display:flex;
+    gap:15px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.controls label{
+    font-size:18px;
+}
+
+#size{
+    width:90px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#334155;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    padding:11px 18px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+#matrixContainer{
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    margin-top:25px;
+}
+
+.matrix-section{
+    background:#0f172a;
+    padding:20px;
+    border-radius:16px;
+    border:1px solid #334155;
+}
+
+.matrix-section h2{
+    margin-bottom:15px;
+    color:#60a5fa;
+}
+
+.matrix-grid{
+    display:grid;
+    gap:10px;
+}
+
+.matrix-row{
+    display:flex;
+    gap:10px;
+}
+
+.math-field{
+    min-width:90px;
+    min-height:55px;
+    background:#475569;
+    border-radius:10px;
+    padding:12px;
+    color:white;
+    font-size:24px;
+    display:flex;
+    align-items:center;
+    overflow-x:auto;
+    border:2px solid transparent;
+    transition:0.2s;
+}
+
+.math-field:focus-within{
+    background:#64748b;
+    border-color:#3b82f6;
+}
+
+.mq-editable-field{
+    width:100%;
+}
+
+.info{
+    margin-top:15px;
+    color:#94a3b8;
+    line-height:1.8;
+}
+
+.resultado{
+    margin-top:35px;
+}
+
+.paso{
+    margin-top:25px;
+    background:#0f172a;
+    padding:22px;
+    border-radius:15px;
+    border:1px solid #334155;
+}
+
+.paso h3{
+    color:#60a5fa;
+    margin-bottom:12px;
+}
+
+.operacion{
+    margin-bottom:18px;
+    color:#cbd5e1;
+    line-height:1.7;
+}
+
+.latex-matrix{
+    overflow-x:auto;
+    padding:10px;
+    font-size:1.2rem;
+}
+
+.det{
+    margin-top:20px;
+    padding:18px;
+    border-radius:12px;
+    background:#14532d;
+    color:#86efac;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.final{
+    margin-top:30px;
+    background:#1e40af;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    font-size:1.5rem;
+    line-height:2;
+}
+
+.variable-box{
+    margin-top:15px;
+    background:#172554;
+    padding:18px;
+    border-radius:12px;
+    border:1px solid #3b82f6;
+}
+
+.mq-root-block{
+    color:white !important;
+}
+
+@media(max-width:768px){
+
+    #matrixContainer{
+        flex-direction:column;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Método de Cramer</h1>
+
+<div class="panel">
+
+    <div class="controls">
+
+        <label>Tamaño del sistema:</label>
+
+        <input
+            type="number"
+            id="size"
+            min="2"
+            max="6"
+            value="3"
+        >
+
+        <button onclick="crearSistema()">
+            Crear Sistema
+        </button>
+
+        <button onclick="resolverCramer()">
+            Resolver por Cramer
+        </button>
+
+    </div>
+
+    <div class="info">
+
+        Puedes escribir:
+
+        <br><br>
+
+        • Fracciones: <b>1/2</b>
+
+        <br>
+
+        • Potencias: <b>x^2</b>
+
+        <br>
+
+        • Raíces: <b>sqrt(2)</b>
+
+        <br>
+
+        • Pi: <b>pi</b>
+
+    </div>
+
+    <div id="matrixContainer"></div>
+
+    <div id="resultado" class="resultado"></div>
+
+</div>
+
+<script>
+
+const MQ = MathQuill.getInterface(2);
+
+let matrixFields = [];
+let resultFields = [];
+
+crearSistema();
+
+function crearSistema(){
+
+    const n = parseInt(document.getElementById("size").value);
+
+    const container = document.getElementById("matrixContainer");
+
+    container.innerHTML = "";
+
+    matrixFields = [];
+    resultFields = [];
+
+    const matrizSection = document.createElement("div");
+    matrizSection.className = "matrix-section";
+
+    matrizSection.innerHTML = `
+        <h2>Matriz A</h2>
+        <div id="matrixA" class="matrix-grid"></div>
+    `;
+
+    const vectorSection = document.createElement("div");
+    vectorSection.className = "matrix-section";
+
+    vectorSection.innerHTML = `
+        <h2>Vector B</h2>
+        <div id="matrixB" class="matrix-grid"></div>
+    `;
+
+    container.appendChild(matrizSection);
+    container.appendChild(vectorSection);
+
+    const matrixA = document.getElementById("matrixA");
+    const matrixB = document.getElementById("matrixB");
+
+    for(let i=0;i<n;i++){
+
+        const row = document.createElement("div");
+        row.className = "matrix-row";
+
+        matrixFields[i] = [];
+
+        for(let j=0;j<n;j++){
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "math-field";
+
+            row.appendChild(wrapper);
+
+            const field = MQ.MathField(wrapper, {
+                spaceBehavesLikeTab: true,
+                autoCommands:'pi sqrt theta alpha beta gamma',
+                autoOperatorNames:'sin cos tan log ln sqrt'
+            });
+
+            field.latex('0');
+
+            matrixFields[i][j] = field;
+        }
+
+        matrixA.appendChild(row);
+
+        const rowB = document.createElement("div");
+        rowB.className = "matrix-row";
+
+        const wrapperB = document.createElement("div");
+        wrapperB.className = "math-field";
+
+        rowB.appendChild(wrapperB);
+
+        const fieldB = MQ.MathField(wrapperB, {
+            spaceBehavesLikeTab: true,
+            autoCommands:'pi sqrt theta alpha beta gamma',
+            autoOperatorNames:'sin cos tan log ln sqrt'
+        });
+
+        fieldB.latex('0');
+
+        resultFields[i] = fieldB;
+
+        matrixB.appendChild(rowB);
+    }
+}
+
+function latexAMathjs(latex){
+
+    return latex
+
+        .replace(/\\\\frac\\{([^}]*)\\}\\{([^}]*)\\}/g,
+            '($1)/($2)')
+
+        .replace(/\\\\sqrt\\{([^}]*)\\}/g,
+            'sqrt($1)')
+
+        .replace(/\\\\pi/g,
+            'pi')
+
+        .replace(/\\\\left/g, '')
+
+        .replace(/\\\\right/g, '');
+}
+
+function obtenerSistema(){
+
+    const n = parseInt(document.getElementById("size").value);
+
+    let A = [];
+    let B = [];
+
+    for(let i=0;i<n;i++){
+
+        let fila = [];
+
+        for(let j=0;j<n;j++){
+
+            try{
+
+                let latex = matrixFields[i][j].latex();
+
+                let expresion = latexAMathjs(latex);
+
+                let valor = math.evaluate(expresion);
+
+                fila.push(valor);
+
+            }catch{
+
+                alert(`Error en A[${i+1}][${j+1}]`);
+
+                return null;
+            }
+        }
+
+        A.push(fila);
+
+        try{
+
+            let latexB = resultFields[i].latex();
+
+            let expresionB = latexAMathjs(latexB);
+
+            let valorB = math.evaluate(expresionB);
+
+            B.push(valorB);
+
+        }catch{
+
+            alert(`Error en B[${i+1}]`);
+
+            return null;
+        }
+    }
+
+    return {A,B};
+}
+
+function copiarMatriz(A){
+
+    return A.map(fila => [...fila]);
+}
+
+function reemplazarColumna(A,B,columna){
+
+    let nueva = copiarMatriz(A);
+
+    for(let i=0;i<A.length;i++){
+
+        nueva[i][columna] = B[i];
+    }
+
+    return nueva;
+}
+
+function numeroALatex(num){
+
+    if(Math.abs(num) < 1e-10){
+
+        return '0';
+    }
+
+    try{
+
+        let frac = math.fraction(num);
+
+        if(frac.d !== 1){
+
+            return `\\frac{${frac.s * frac.n}}{${frac.d}}`;
+        }
+
+        return frac.s * frac.n;
+
+    }catch{
+
+        return Number(num.toFixed(4));
+    }
+}
+
+function matrizALatex(A){
+
+    let latex = "\\begin{bmatrix}";
+
+    for(let i=0;i<A.length;i++){
+
+        let fila = A[i]
+            .map(numeroALatex)
+            .join(" & ");
+
+        latex += fila;
+
+        if(i < A.length - 1){
+
+            latex += " \\\\ ";
+        }
+    }
+
+    latex += "\\end{bmatrix}";
+
+    return latex;
+}
+
+function resolverCramer(){
+
+    const sistema = obtenerSistema();
+
+    if(!sistema) return;
+
+    const A = sistema.A;
+    const B = sistema.B;
+
+    const resultado = document.getElementById("resultado");
+
+    resultado.innerHTML = "";
+
+    const n = A.length;
+
+    const D = math.det(A);
+
+    resultado.innerHTML += `
+
+    <div class="paso">
+
+        <h3>Paso 1 — Matriz principal</h3>
+
+        <div class="operacion">
+            La matriz principal del sistema es:
+        </div>
+
+        <div class="latex-matrix">
+            \\[
+            A=${matrizALatex(A)}
+            \\]
+        </div>
+
+    </div>
+    `;
+
+    resultado.innerHTML += `
+
+    <div class="paso">
+
+        <h3>Paso 2 — Vector de resultados</h3>
+
+        <div class="latex-matrix">
+            \\[
+            B=${matrizALatex(B.map(x=>[x]))}
+            \\]
+        </div>
+
+    </div>
+    `;
+
+    resultado.innerHTML += `
+
+    <div class="paso">
+
+        <h3>Paso 3 — Determinante principal</h3>
+
+        <div class="operacion">
+            Calculamos el determinante principal:
+        </div>
+
+        <div class="det">
+            \\[
+            D=${numeroALatex(D)}
+            \\]
+        </div>
+
+    </div>
+    `;
+
+    if(Math.abs(D) < 1e-10){
+
+        resultado.innerHTML += `
+
+        <div class="final">
+            El sistema no tiene solución única porque el determinante principal es 0.
+        </div>
+        `;
+
+        MathJax.typesetPromise();
+
+        return;
+    }
+
+    let variables = ['x','y','z','w','v','u'];
+
+    let soluciones = [];
+
+    for(let i=0;i<n;i++){
+
+        let matrizReemplazo = reemplazarColumna(A,B,i);
+
+        let determinante = math.det(matrizReemplazo);
+
+        let solucion = determinante / D;
+
+        soluciones.push(solucion);
+
+        resultado.innerHTML += `
+
+        <div class="paso">
+
+            <h3>Paso ${i+4} — Determinante ${variables[i]}</h3>
+
+            <div class="operacion">
+                Se reemplaza la columna ${i+1} por el vector B.
+            </div>
+
+            <div class="latex-matrix">
+
+                \\[
+                D_{${variables[i]}}
+                =
+                ${matrizALatex(matrizReemplazo)}
+                \\]
+
+            </div>
+
+            <div class="variable-box">
+
+                \\[
+                D_{${variables[i]}}
+                =
+                ${numeroALatex(determinante)}
+                \\]
+
+                <br><br>
+
+                \\[
+                ${variables[i]}
+                =
+                \\frac{D_{${variables[i]}}}{D}
+                =
+                \\frac{${numeroALatex(determinante)}}{${numeroALatex(D)}}
+                =
+                ${numeroALatex(solucion)}
+                \\]
+
+            </div>
+
+        </div>
+        `;
+    }
+
+    let solucionFinal = "";
+
+    for(let i=0;i<n;i++){
+
+    solucionFinal += `
+        \\[
+        ${variables[i]} = ${numeroALatex(soluciones[i])}
+        \\]
+    `;
+}
+
+    resultado.innerHTML += `
+
+    <div class="final">
+
+        <h2>Solución Final</h2>
+
+        <br>
+
+        ${solucionFinal}
+
+    </div>
+    `;
+
+    MathJax.typesetPromise();
+}
+
+</script>
+
+</body>
+</html>
+```
+
+## Qué hace esta página
+
+* Resuelve sistemas por el método de Cramer.
+* Permite matrices desde 2x2 hasta 6x6.
+* Muestra el procedimiento paso a paso.
+* Calcula:
+
+  * Determinante principal.
+  * Determinantes parciales.
+  * Solución de cada variable.
+* Acepta:
+
+  * fracciones,
+  * raíces,
+  * pi,
+  * expresiones matemáticas.
+* Usa:
+
+  * MathQuill,
+  * MathJax,
+  * Math.js.
+
+
+5. Verás todo el procedimiento matemático paso a paso.
 
