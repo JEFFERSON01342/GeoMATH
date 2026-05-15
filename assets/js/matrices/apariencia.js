@@ -559,6 +559,24 @@ document
 
             return;
         }
+
+        /* ===================== */
+        /* FACTORIZACION LU */
+        /* ===================== */
+        if(method === "LU"){
+
+            const result =
+                solveLU(
+                    A,
+                    B
+                );
+
+            renderLU(
+                result
+            );
+
+            return;
+        }
     }
 );
 
