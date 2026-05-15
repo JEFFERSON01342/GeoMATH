@@ -293,7 +293,7 @@ function augmentedToLatex(matrix){
 
             return `
             ${left}
-            & \\vline &
+            \\;|\\;
             ${right}
             `;
         }

@@ -296,7 +296,161 @@ function matrixToLatexNumbers(matrix){
 }
 
 /* ===================== */
-/* SOLVE */
+/* SOLVE CRAMER */
+/* ===================== */
+function solveCramer(A,B){
+
+    const resultContainer =
+        document.getElementById(
+            "system-result"
+        );
+
+    const procedure =
+        document.getElementById(
+            "system-procedure"
+        );
+
+    procedure.innerHTML = "";
+
+    const D =
+        determinant(A);
+
+    resultContainer.innerHTML = `
+
+    <div class="result-card">
+
+        <h3>
+            Determinante principal
+        </h3>
+
+        <div class="result-value">
+
+            $$
+            D=${D}
+            $$
+
+        </div>
+
+    </div>
+    `;
+
+    if(D === 0){
+
+        procedure.innerHTML = `
+
+        <div class="procedure-placeholder">
+
+            <h4>
+                El sistema no
+                tiene solución única.
+            </h4>
+
+        </div>
+        `;
+
+        MathJax.typesetPromise();
+
+        return;
+    }
+
+    const vars =
+        ["x","y","z","w","v","u"];
+
+    for(let i=0;i<systemSize;i++){
+
+        const replaced =
+            replaceColumn(
+                A,
+                B,
+                i
+            );
+
+        const Di =
+            determinant(
+                replaced
+            );
+
+        const solution =
+            Di / D;
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "step-card";
+
+        card.innerHTML = `
+
+        <div class="step-header">
+
+            <div class="step-number">
+                ${i+1}
+            </div>
+
+            <div class="step-title">
+
+                Variable
+                ${vars[i]}
+
+            </div>
+
+        </div>
+
+        <div class="step-description">
+
+            Se reemplaza la columna
+            ${i+1} de la matriz A
+            por el vector B.
+
+        </div>
+
+        <div class="step-operation">
+
+            $$
+            D_${vars[i]}
+            =
+            ${Di}
+            $$
+
+        </div>
+
+        <div class="step-latex-matrix">
+
+            $$
+            ${matrixToLatexNumbers(replaced)}
+            $$
+
+        </div>
+
+        <div class="pivot-info">
+
+            $$
+            ${vars[i]}
+            =
+            \\frac{
+                ${Di}
+            }{
+                ${D}
+            }
+            =
+            ${solution}
+            $$
+
+        </div>
+        `;
+
+        procedure.appendChild(
+            card
+        );
+    }
+
+    MathJax.typesetPromise();
+}
+
+/* ===================== */
+/* MAIN CONTROLLER */
 /* ===================== */
 document
 .getElementById(
@@ -312,145 +466,40 @@ document
         const B =
             getSystemVector();
 
-        const resultContainer =
+        const method =
             document.getElementById(
-                "system-result"
+                "system-method"
+            ).value;
+
+        /* ===================== */
+        /* CRAMER */
+        /* ===================== */
+        if(method === "cramer"){
+
+            solveCramer(
+                A,
+                B
             );
-
-        const procedure =
-            document.getElementById(
-                "system-procedure"
-            );
-
-        procedure.innerHTML = "";
-
-        const D =
-            determinant(A);
-
-        resultContainer.innerHTML = `
-
-        <div class="result-card">
-
-            <h3>
-                Determinante principal
-            </h3>
-
-            <div class="result-value">
-
-                $$
-                D=${D}
-                $$
-
-            </div>
-
-        </div>
-        `;
-
-        if(D === 0){
-
-            procedure.innerHTML = `
-
-            <div class="procedure-placeholder">
-
-                <h4>
-                    El sistema no
-                    tiene solución única.
-                </h4>
-
-            </div>
-            `;
-
-            MathJax.typesetPromise();
-
-            return;
         }
 
-        const vars =
-            ["x","y","z","w","v","u"];
+        /* ===================== */
+        /* GAUSS JORDAN */
+        /* ===================== */
+        else if(
+            method ===
+            "gauss-jordan"
+        ){
 
-        for(let i=0;i<systemSize;i++){
-
-            const replaced =
-                replaceColumn(
+            const result =
+                solveGaussJordan(
                     A,
-                    B,
-                    i
+                    B
                 );
 
-            const Di =
-                determinant(
-                    replaced
-                );
-
-            const solution =
-                Di / D;
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-            card.className =
-                "step-card";
-
-            card.innerHTML = `
-
-            <div class="step-header">
-
-                <div class="step-number">
-                    ${i+1}
-                </div>
-
-                <div class="step-title">
-
-                    Variable
-                    ${vars[i]}
-
-                </div>
-
-            </div>
-
-            <div class="step-operation">
-
-                $$
-                D_${vars[i]}
-                =
-                ${Di}
-                $$
-
-            </div>
-
-            <div class="step-latex-matrix">
-
-                $$
-                ${matrixToLatexNumbers(replaced)}
-                $$
-
-            </div>
-
-            <div class="pivot-info">
-
-                $$
-                ${vars[i]}
-                =
-                \\frac{
-                    ${Di}
-                }{
-                    ${D}
-                }
-                =
-                ${solution}
-                $$
-
-            </div>
-            `;
-
-            procedure.appendChild(
-                card
+            renderGaussJordan(
+                result
             );
         }
-
-        MathJax.typesetPromise();
     }
 );
 
