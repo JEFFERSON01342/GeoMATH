@@ -436,6 +436,24 @@ solveButton.addEventListener(
         let result;
 
         /* ===================== */
+        /* EXPANSION */
+        /* ===================== */
+        if(method === "cramer"){
+
+            result =
+
+                determinantExpansion(
+                    matrix
+                );
+
+            renderDeterminantExpansion(
+                result
+            );
+
+            return;
+        }
+
+        /* ===================== */
         /* METODO GAUSS */
         /* ===================== */
         if(method === "gauss"){
@@ -445,27 +463,102 @@ solveButton.addEventListener(
                 determinantGaussian(
                     matrix
                 );
+
+            renderProcedure(
+                result
+            );
+
+            return;
         }
 
         /* ===================== */
         /* TRIANGULACION */
         /* ===================== */
-        else if(
-            method ===
-            "triangulation"
-        ){
+        if(method === "triangulation"){
 
             result =
 
                 determinantTriangulation(
                     matrix
                 );
+
+            renderProcedure(
+                result
+            );
+
+            return;
         }
 
-        renderProcedure(
-            result
-        );
+    }
+);
 
+/* ===================== */
+/* MAIN CONTROLLER */
+/* ===================== */
+document
+.getElementById(
+    "solve-system"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        const method =
+            document.getElementById(
+                "system-method"
+            ).value;
+
+        const A =
+            getSystemMatrix();
+
+        const B =
+            getSystemVector();
+
+        /* ===================== */
+        /* CRAMER */
+        /* ===================== */
+        if(method === "cramer"){
+
+            solveCramer(A, B);
+
+            return;
+        }
+
+        /* ===================== */
+        /* GAUSS JORDAN */
+        /* ===================== */
+        if(method === "gauss-jordan"){
+
+            const result =
+                solveGaussJordan(
+                    A,
+                    B
+                );
+
+            renderGaussJordan(
+                result
+            );
+
+            return;
+        }
+
+        /* ===================== */
+        /* TRIANGULACION */
+        /* ===================== */
+        if(method === "gaussian"){
+
+            const result =
+                solveGaussianElimination(
+                    A,
+                    B
+                );
+
+            renderGaussianElimination(
+                result
+            );
+
+            return;
+        }
     }
 );
 

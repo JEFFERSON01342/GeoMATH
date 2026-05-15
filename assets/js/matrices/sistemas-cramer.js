@@ -449,75 +449,7 @@ function solveCramer(A,B){
     MathJax.typesetPromise();
 }
 
-/* ===================== */
-/* MAIN CONTROLLER */
-/* ===================== */
-document
-.getElementById(
-    "solve-system"
-)
-.addEventListener(
-    "click",
-    () => {
 
-        const method =
-            document.getElementById(
-                "system-method"
-            ).value;
-
-        const A =
-            getSystemMatrix();
-
-        const B =
-            getSystemVector();
-
-        /* ===================== */
-        /* CRAMER */
-        /* ===================== */
-        if(method === "cramer"){
-
-            solveCramer(A, B);
-
-            return;
-        }
-
-        /* ===================== */
-        /* GAUSS JORDAN */
-        /* ===================== */
-        if(method === "gauss-jordan"){
-
-            const result =
-                solveGaussJordan(
-                    A,
-                    B
-                );
-
-            renderGaussJordan(
-                result
-            );
-
-            return;
-        }
-
-        /* ===================== */
-        /* TRIANGULACION */
-        /* ===================== */
-        if(method === "gaussian"){
-
-            const result =
-                solveGaussianElimination(
-                    A,
-                    B
-                );
-
-            renderGaussianElimination(
-                result
-            );
-
-            return;
-        }
-    }
-);
 
 /* ===================== */
 /* INIT */
