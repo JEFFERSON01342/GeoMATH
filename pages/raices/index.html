@@ -111,7 +111,9 @@
     <!-- ===================== -->
     <div class="card">
 
-        <h2> Escriba su función acá:</h2>
+        <h2 id="titulo-funcion">
+            Escriba f(x):
+        </h2>
 
         <div id="cientifica"></div>
 
@@ -176,66 +178,45 @@
         </div>
 
         <!-- INPUTS -->
-        <div class="inputs-metodo" id="inputs-metodo">
+<div class="inputs-metodo" id="inputs-metodo">
 
-            <div id="input-a-group">
+    <div id="input-a-group">
 
-                <label>a:</label>
+        <label>a:</label>
 
-                <input
-                    type="number"
-                    id="input-a">
-            </div>
-
-            <div id="input-b-group">
-
-                <label>b:</label>
-
-                <input
-                    type="number"
-                    id="input-b">
-            </div>
-
-            <div id="input-x0-group">
-
-                <label>x₀:</label>
-
-                <input
-                    type="number"
-                    id="input-x0">
-            </div>
-
-            <button id="btn-iterar">
-
-                ▶ Ejecutar método
-
-            </button>
-
-        </div>
-
+        <input
+            type="number"
+            step="any"
+            id="input-a">
     </div>
 
-    <!-- ===================== -->
-    <!-- gx CANDIDATAS -->
-    <!-- ===================== -->
-    <div class="card gx-box" id="gx-box">
+    <div id="input-b-group">
 
-        <h2> g(x) candidatas generadas</h2>
+        <label>b:</label>
 
-        <p class="gx-info">
+        <input
+            type="number"
+            step="any"
+            id="input-b">
+    </div>
 
-            El sistema generará automáticamente varias
-            funciones g(x), evaluará su convergencia
-            y seleccionará la mejor candidata.
+    <div id="input-x0-group">
 
-        </p>
+        <label>x₀:</label>
 
-        <!-- LISTA -->
-        <div id="gx-list">
+        <input
+            type="number"
+            step="any"
+            id="input-x0">
+    </div>
 
-            <!-- generado dinámicamente -->
+    <button id="btn-iterar">
 
-        </div>
+        ▶ Ejecutar método
+
+    </button>
+
+</div>
 
     </div>
 
@@ -280,6 +261,28 @@
 <!-- ===================== -->
 <!-- SCRIPT -->
 <!-- ===================== -->
+<!-- ===================== -->
+<!-- SCRIPTS -->
+<!-- ===================== -->
+
+<script src="../../assets/js/raices/latex-parser.js"></script>
+
+<script src="../../assets/js/raices/math-engine.js"></script>
+
+<script src="../../assets/js/raices/desmos.js"></script>
+
+<script src="../../assets/js/raices/ui.js"></script>
+
+<script src="../../assets/js/raices/metodos/biseccion.js"></script>
+
+<script src="../../assets/js/raices/metodos/regla-falsa.js"></script>
+
+<script src="../../assets/js/raices/metodos/newton.js"></script>
+
+<script src="../../assets/js/raices/metodos/secante.js"></script>
+
+<script src="../../assets/js/raices/metodos/punto-fijo.js"></script>
+
 <script src="../../assets/js/raices/raices.js"></script>
 
 </body>
