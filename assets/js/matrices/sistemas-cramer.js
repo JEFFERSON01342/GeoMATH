@@ -460,35 +460,31 @@ document
     "click",
     () => {
 
+        const method =
+            document.getElementById(
+                "system-method"
+            ).value;
+
         const A =
             getSystemMatrix();
 
         const B =
             getSystemVector();
 
-        const method =
-            document.getElementById(
-                "system-method"
-            ).value;
-
         /* ===================== */
         /* CRAMER */
         /* ===================== */
         if(method === "cramer"){
 
-            solveCramer(
-                A,
-                B
-            );
+            solveCramer(A, B);
+
+            return;
         }
 
         /* ===================== */
         /* GAUSS JORDAN */
         /* ===================== */
-        else if(
-            method ===
-            "gauss-jordan"
-        ){
+        if(method === "gauss-jordan"){
 
             const result =
                 solveGaussJordan(
@@ -499,6 +495,26 @@ document
             renderGaussJordan(
                 result
             );
+
+            return;
+        }
+
+        /* ===================== */
+        /* TRIANGULACION */
+        /* ===================== */
+        if(method === "gaussian"){
+
+            const result =
+                solveGaussianElimination(
+                    A,
+                    B
+                );
+
+            renderGaussianElimination(
+                result
+            );
+
+            return;
         }
     }
 );
