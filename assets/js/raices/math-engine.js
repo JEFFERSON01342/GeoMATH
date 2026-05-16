@@ -43,6 +43,10 @@ function evaluarFuncion(
             E:
                 Math.E,
 
+            // =====================
+            // TRIGONOMÉTRICAS
+            // =====================
+
             sin:
                 Math.sin,
 
@@ -70,11 +74,19 @@ function evaluarFuncion(
             tanh:
                 Math.tanh,
 
+            // =====================
+            // RAÍCES / ABS
+            // =====================
+
             sqrt:
                 Math.sqrt,
 
             abs:
                 Math.abs,
+
+            // =====================
+            // REDONDEO
+            // =====================
 
             floor:
                 Math.floor,
@@ -85,9 +97,15 @@ function evaluarFuncion(
             round:
                 Math.round,
 
+            // =====================
+            // LOGARITMOS
+            // =====================
+
+            // ln(x)
             log:
                 Math.log,
 
+            // log10(x)
             log10:
                 Math.log10
                     ? Math.log10
@@ -100,11 +118,23 @@ function evaluarFuncion(
                         );
                     },
 
+            // =====================
+            // EXPONENCIAL
+            // =====================
+
             exp:
                 Math.exp,
 
+            // =====================
+            // POTENCIAS
+            // =====================
+
             pow:
                 Math.pow,
+
+            // =====================
+            // MIN / MAX
+            // =====================
 
             min:
                 Math.min,
@@ -124,6 +154,7 @@ function evaluarFuncion(
 
                 `
                 "use strict";
+
                 return (${expr});
                 `
             );
@@ -138,7 +169,7 @@ function evaluarFuncion(
             );
 
         // =====================
-        // VALIDACIÓN
+        // VALIDAR RESULTADO
         // =====================
 
         if (
@@ -156,7 +187,7 @@ function evaluarFuncion(
     } catch (error) {
 
         console.error(
-            "Error evaluando:",
+            "ERROR EVALUANDO:",
             expr,
             "x =",
             x,
@@ -181,6 +212,17 @@ function derivadaNumerica(
     try {
 
         // =====================
+        // VALIDAR x
+        // =====================
+
+        if (
+            !isFinite(x)
+        ) {
+
+            return NaN;
+        }
+
+        // =====================
         // h ADAPTATIVO
         // =====================
 
@@ -189,6 +231,10 @@ function derivadaNumerica(
                 1e-6,
                 Math.abs(x) * 1e-6
             );
+
+        // =====================
+        // EVALUAR
+        // =====================
 
         const fxh1 =
             evaluarFuncion(
@@ -250,7 +296,7 @@ function derivadaNumerica(
     } catch (error) {
 
         console.error(
-            "Error derivada:",
+            "ERROR DERIVADA:",
             error
         );
 
@@ -269,6 +315,13 @@ function segundaDerivada(
 ) {
 
     try {
+
+        if (
+            !isFinite(x)
+        ) {
+
+            return NaN;
+        }
 
         const h =
             1e-5;
@@ -321,6 +374,10 @@ function segundaDerivada(
                 h * h
             );
 
+        // =====================
+        // VALIDAR
+        // =====================
+
         if (
             !isFinite(resultado) ||
             isNaN(resultado)
@@ -334,7 +391,7 @@ function segundaDerivada(
     } catch (error) {
 
         console.error(
-            "Error segunda derivada:",
+            "ERROR SEGUNDA DERIVADA:",
             error
         );
 
@@ -411,6 +468,10 @@ function buscarIntervalos(
                 x + paso
             );
 
+        // =====================
+        // VALIDAR
+        // =====================
+
         if (
             isNaN(fx1) ||
             isNaN(fx2)
@@ -419,9 +480,13 @@ function buscarIntervalos(
             continue;
         }
 
-        // raíz exacta
+        // =====================
+        // RAÍZ EXACTA
+        // =====================
+
         if (
-            fx1 === 0
+            Math.abs(fx1)
+            < 1e-12
         ) {
 
             intervalos.push({
@@ -433,7 +498,10 @@ function buscarIntervalos(
             continue;
         }
 
-        // cambio de signo
+        // =====================
+        // CAMBIO SIGNO
+        // =====================
+
         if (
             fx1 * fx2 < 0
         ) {

@@ -61,6 +61,13 @@ function convertirLatexAJS(
     // FUNCIONES
     // =====================
 
+    // soportar sen
+    expr =
+        expr.replace(
+            /\\?sen/g,
+            "sin"
+        );
+
     expr =
         expr.replace(
             /\\sin/g,
@@ -144,22 +151,65 @@ function convertirLatexAJS(
             "E"
         );
 
+// =====================
+// MULTIPLICACIÓN
+// IMPLÍCITA
+// =====================
+
+// 2x -> 2*x
+expr =
+    expr.replace(
+        /(\d)([a-zA-Z])/g,
+        "$1*$2"
+    );
+
+// )( -> )*(
+expr =
+    expr.replace(
+        /\)\(/g,
+        ")*("
+    );
+
+// 2( -> 2*(
+expr =
+    expr.replace(
+        /(\d)\(/g,
+        "$1*("
+    );
+
+// )x -> )*x
+expr =
+    expr.replace(
+        /\)([a-zA-Z])/g,
+        ")*$1"
+    );
+
+// x( -> x*(
+expr =
+    expr.replace(
+        /(x|PI|E)\(/g,
+        "$1*("
+    );
+
     // =====================
-    // e^x → exp(x)
+    // e^(x) → exp(x)
     // =====================
 
+    // E^{...}
     expr =
         expr.replace(
             /E\^\{([^{}]+)\}/g,
             "exp($1)"
         );
 
+    // E^(...)
     expr =
         expr.replace(
             /E\^\(([^()]+)\)/g,
             "exp($1)"
         );
 
+    // E^x
     expr =
         expr.replace(
             /E\^([a-zA-Z0-9.+\-*/]+)/g,
@@ -178,74 +228,6 @@ function convertirLatexAJS(
         );
 
     // =====================
-    // MULTIPLICACIÓN IMPLÍCITA
-    // =====================
-
-    // 2x → 2*x
-    expr =
-        expr.replace(
-            /(\d)([a-zA-Z])/g,
-            "$1*$2"
-        );
-
-    // x2 → x*2
-    expr =
-        expr.replace(
-            /([a-zA-Z])(\d)/g,
-            "$1*$2"
-        );
-
-    // )( → )*(
-    expr =
-        expr.replace(
-            /\)\(/g,
-            ")*("
-        );
-
-    // 2(
-    expr =
-        expr.replace(
-            /(\d)\(/g,
-            "$1*("
-        );
-
-    // )x
-    expr =
-        expr.replace(
-            /\)([a-zA-Z])/g,
-            ")*$1"
-        );
-
-    // x(
-    expr =
-        expr.replace(
-            /([a-zA-Z])\(/g,
-            "$1*("
-        );
-
-    // PIx
-    expr =
-        expr.replace(
-            /(PI)([a-zA-Z])/g,
-            "$1*$2"
-        );
-
-    // Ex
-    expr =
-        expr.replace(
-            /(E)([a-zA-Z])/g,
-            "$1*$2"
-        );
-
-    // número seguido de función
-    // 2sin(x)
-    expr =
-        expr.replace(
-            /(\d)(sin|cos|tan|log|log10|sqrt|exp|abs)/g,
-            "$1*$2"
-        );
-
-    // =====================
     // POTENCIA JS
     // =====================
 
@@ -256,7 +238,12 @@ function convertirLatexAJS(
         );
 
     console.log(
-        "Latex → JS:",
+        "LATEX ORIGINAL:",
+        latex
+    );
+
+    console.log(
+        "LATEX → JS:",
         expr
     );
 
