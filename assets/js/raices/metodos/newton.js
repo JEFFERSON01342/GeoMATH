@@ -32,9 +32,35 @@ window.metodoNewton = function (
         );
 
     console.log(
+        "LATEX ORIGINAL:",
+        latex
+    );
+
+    console.log(
         "EXPRESION JS:",
         expr
     );
+
+    // =====================
+    // VALIDAR EXPRESIÓN
+    // =====================
+
+    if (
+        !expr ||
+        expr.trim() === ""
+    ) {
+
+        resultado.innerHTML = `
+        <p style="
+            color:#ef4444;
+            font-weight:bold;
+        ">
+            Error convirtiendo la función
+        </p>
+        `;
+
+        return;
+    }
 
     // =====================
     // DERIVADA ALGEBRAICA
@@ -46,12 +72,17 @@ window.metodoNewton = function (
     try {
 
         // =====================
-        // EXPRESIÓN JS
+        // EXPRESIÓN PARA math.js
         // =====================
 
-        const exprDerivada =
-            window.convertirLatexAJS(
-                latex
+        let exprDerivada =
+            expr;
+
+        // math.js usa ^
+        exprDerivada =
+            exprDerivada.replace(
+                /\*\*/g,
+                "^"
             );
 
         console.log(
@@ -60,12 +91,11 @@ window.metodoNewton = function (
         );
 
         // =====================
-        // DERIVAR CON MATHJS
+        // DERIVAR
         // =====================
 
         const derivada =
-            math
-            .derivative(
+            math.derivative(
                 exprDerivada,
                 "x"
             );
@@ -76,7 +106,7 @@ window.metodoNewton = function (
         );
 
         // =====================
-        // CONVERTIR A LATEX
+        // LATEX
         // =====================
 
         derivadaLatex =
@@ -88,6 +118,19 @@ window.metodoNewton = function (
             "DERIVADA LATEX:",
             derivadaLatex
         );
+
+        // =====================
+        // VALIDAR
+        // =====================
+
+        if (
+            !derivadaLatex ||
+            derivadaLatex === "undefined"
+        ) {
+
+            derivadaLatex =
+                "\\text{No disponible}";
+        }
 
     }
     catch(error){
@@ -128,7 +171,7 @@ window.metodoNewton = function (
     overflow:hidden;
 ">
 
-    <!-- brillo decorativo -->
+    <!-- brillo -->
     <div style="
         position:absolute;
         top:-40px;
@@ -169,6 +212,8 @@ window.metodoNewton = function (
             justify-content:center;
 
             font-size:22px;
+
+            color:white;
         ">
             ∂
         </div>
@@ -288,6 +333,17 @@ window.metodoNewton = function (
                 xi
             );
 
+        console.log(
+            "ITERACION:",
+            i,
+            "xi:",
+            xi,
+            "f(xi):",
+            fxi,
+            "f'(xi):",
+            dfxi
+        );
+
         // =====================
         // VALIDAR
         // =====================
@@ -296,14 +352,20 @@ window.metodoNewton = function (
             !isFinite(fxi)
             ||
             !isFinite(dfxi)
+            ||
+            isNaN(fxi)
+            ||
+            isNaN(dfxi)
         ) {
 
             resultado.innerHTML += `
                 <p style="
-                    color:red;
-                    margin-top:10px;
+                    color:#ef4444;
+                    margin-top:15px;
+                    font-weight:bold;
                 ">
                     Error evaluando la función
+                    o su derivada.
                 </p>
             `;
 
@@ -321,10 +383,11 @@ window.metodoNewton = function (
 
             resultado.innerHTML += `
                 <p style="
-                    color:red;
-                    margin-top:10px;
+                    color:#ef4444;
+                    margin-top:15px;
+                    font-weight:bold;
                 ">
-                    Derivada cercana a cero
+                    Derivada cercana a cero.
                 </p>
             `;
 
@@ -332,7 +395,7 @@ window.metodoNewton = function (
         }
 
         // =====================
-        // FÓRMULA NEWTON
+        // NEWTON
         // =====================
 
         const xiSiguiente =
@@ -342,7 +405,7 @@ window.metodoNewton = function (
             );
 
         // =====================
-        // ERROR RELATIVO
+        // ERROR
         // =====================
 
         const errorRel =
@@ -402,7 +465,7 @@ window.metodoNewton = function (
         );
 
         // =====================
-        // CRITERIO PARO
+        // CONVERGIÓ
         // =====================
 
         if (
@@ -418,13 +481,35 @@ window.metodoNewton = function (
             );
 
             resultado.innerHTML += `
-                <p style="
-                    margin-top:15px;
-                    font-size:18px;
-                    color:#22c55e;
+                <div style="
+                    margin-top:20px;
+                    padding:18px;
+
+                    border-radius:18px;
+
+                    background:
+                    linear-gradient(
+                        135deg,
+                        #166534,
+                        #15803d
+                    );
+
+                    color:white;
+
+                    font-size:20px;
+                    font-weight:bold;
+
+                    box-shadow:
+                    0 8px 20px rgba(34,197,94,0.25);
                 ">
-                    Raíz ≈ ${xi.toFixed(6)}
-                </p>
+
+                    ✓ Raíz aproximada:
+
+                    <br><br>
+
+                    x ≈ ${xi.toFixed(6)}
+
+                </div>
             `;
 
             return;
@@ -450,10 +535,11 @@ window.metodoNewton = function (
 
             resultado.innerHTML += `
                 <p style="
-                    color:red;
-                    margin-top:10px;
+                    color:#ef4444;
+                    margin-top:15px;
+                    font-weight:bold;
                 ">
-                    Divergencia numérica
+                    Divergencia numérica.
                 </p>
             `;
 
@@ -476,16 +562,35 @@ window.metodoNewton = function (
     );
 
     resultado.innerHTML += `
-        <p style="
-            margin-top:15px;
-            color:orange;
+        <div style="
+            margin-top:20px;
+            padding:18px;
+
+            border-radius:18px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #92400e,
+                #b45309
+            );
+
+            color:white;
+
+            font-size:18px;
+            font-weight:bold;
         ">
-            Raíz aproximada ≈
-            ${xi.toFixed(6)}
 
-            <br>
+            Raíz aproximada:
 
-            (máximo de iteraciones alcanzado)
-        </p>
+            <br><br>
+
+            x ≈ ${xi.toFixed(6)}
+
+            <br><br>
+
+            Máximo de iteraciones alcanzado
+
+        </div>
     `;
 };
