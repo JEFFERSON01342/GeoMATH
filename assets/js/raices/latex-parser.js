@@ -23,7 +23,7 @@ function convertirLatexAJS(
     expr =
         expr.replace(/\s+/g, "");
 
-    // eliminar \left y \right
+    // quitar \left y \right
     expr =
         expr.replace(/\\left/g, "");
 
@@ -37,6 +37,31 @@ function convertirLatexAJS(
     expr =
         convertirFracciones(
             expr
+        );
+
+    // =====================
+    // e^{...} → exp(...)
+    // =====================
+
+    // e^{x}
+    expr =
+        expr.replace(
+            /e\^\{([^{}]+)\}/g,
+            "exp($1)"
+        );
+
+    // e^(x)
+    expr =
+        expr.replace(
+            /e\^\(([^()]+)\)/g,
+            "exp($1)"
+        );
+
+    // e^x
+    expr =
+        expr.replace(
+            /e\^([a-zA-Z0-9.+\-*/]+)/g,
+            "exp($1)"
         );
 
     // =====================
@@ -61,7 +86,7 @@ function convertirLatexAJS(
     // FUNCIONES
     // =====================
 
-    // soportar sen
+    // sen → sin
     expr =
         expr.replace(
             /\\?sen/g,
@@ -104,12 +129,14 @@ function convertirLatexAJS(
             "atan"
         );
 
+    // ln(x)
     expr =
         expr.replace(
             /\\ln/g,
             "log"
         );
 
+    // log(x)
     expr =
         expr.replace(
             /\\log/g,
@@ -144,76 +171,11 @@ function convertirLatexAJS(
             "PI"
         );
 
-    // e → E
+    // e restante → E
     expr =
         expr.replace(
             /\be\b/g,
             "E"
-        );
-
-// =====================
-// MULTIPLICACIÓN
-// IMPLÍCITA
-// =====================
-
-// 2x -> 2*x
-expr =
-    expr.replace(
-        /(\d)([a-zA-Z])/g,
-        "$1*$2"
-    );
-
-// )( -> )*(
-expr =
-    expr.replace(
-        /\)\(/g,
-        ")*("
-    );
-
-// 2( -> 2*(
-expr =
-    expr.replace(
-        /(\d)\(/g,
-        "$1*("
-    );
-
-// )x -> )*x
-expr =
-    expr.replace(
-        /\)([a-zA-Z])/g,
-        ")*$1"
-    );
-
-// x( -> x*(
-expr =
-    expr.replace(
-        /(x|PI|E)\(/g,
-        "$1*("
-    );
-
-    // =====================
-    // e^(x) → exp(x)
-    // =====================
-
-    // E^{...}
-    expr =
-        expr.replace(
-            /E\^\{([^{}]+)\}/g,
-            "exp($1)"
-        );
-
-    // E^(...)
-    expr =
-        expr.replace(
-            /E\^\(([^()]+)\)/g,
-            "exp($1)"
-        );
-
-    // E^x
-    expr =
-        expr.replace(
-            /E\^([a-zA-Z0-9.+\-*/]+)/g,
-            "exp($1)"
         );
 
     // =====================
@@ -225,6 +187,60 @@ expr =
         expr.replace(
             /\^\{([^{}]+)\}/g,
             "^($1)"
+        );
+
+    // =====================
+    // MULTIPLICACIÓN
+    // IMPLÍCITA
+    // =====================
+
+    // 2x → 2*x
+    expr =
+        expr.replace(
+            /(\d)([a-zA-Z])/g,
+            "$1*$2"
+        );
+
+    // )( → )*(
+    expr =
+        expr.replace(
+            /\)\(/g,
+            ")*("
+        );
+
+    // 2( → 2*(
+    expr =
+        expr.replace(
+            /(\d)\(/g,
+            "$1*("
+        );
+
+    // )x → )*x
+    expr =
+        expr.replace(
+            /\)([a-zA-Z])/g,
+            ")*$1"
+        );
+
+    // x( → x*(
+    expr =
+        expr.replace(
+            /(x|PI|E)\(/g,
+            "$1*("
+        );
+
+    // xsin(x)
+    expr =
+        expr.replace(
+            /(x|PI|E)(sin|cos|tan|asin|acos|atan|log|log10|sqrt|exp|abs)/g,
+            "$1*$2"
+        );
+
+    // 2sin(x)
+    expr =
+        expr.replace(
+            /(\d)(sin|cos|tan|asin|acos|atan|log|log10|sqrt|exp|abs)/g,
+            "$1*$2"
         );
 
     // =====================
