@@ -37,181 +37,191 @@ window.metodoNewton = function (
     );
 
     // =====================
-// DERIVADA ALGEBRAICA
-// =====================
-
-let derivadaLatex =
-    "\\text{No disponible}";
-
-try {
-
-    // =====================
-    // EXPRESIÓN PARA ALGEBRITE
+    // DERIVADA ALGEBRAICA
     // =====================
 
-    let exprAlgebrite = latex;
+    let derivadaLatex =
+        "\\text{No disponible}";
 
-    // quitar left/right
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\\left/g,
-            ""
+    try {
+
+        // =====================
+        // EXPRESIÓN JS
+        // =====================
+
+        const exprDerivada =
+            window.convertirLatexAJS(
+                latex
+            );
+
+        console.log(
+            "EXPRESION DERIVAR:",
+            exprDerivada
         );
 
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\\right/g,
-            ""
+        // =====================
+        // DERIVAR CON MATHJS
+        // =====================
+
+        const derivada =
+            math
+            .derivative(
+                exprDerivada,
+                "x"
+            );
+
+        console.log(
+            "DERIVADA:",
+            derivada.toString()
         );
 
-    // =====================
-    // FUNCIONES LATEX → ALGEBRITE
-    // =====================
+        // =====================
+        // CONVERTIR A LATEX
+        // =====================
 
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\\sin/g,
-            "sin"
+        derivadaLatex =
+            derivada.toTex({
+                parenthesis: "keep"
+            });
+
+        console.log(
+            "DERIVADA LATEX:",
+            derivadaLatex
         );
 
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\\cos/g,
-            "cos"
+    }
+    catch(error){
+
+        console.error(
+            "ERROR DERIVADA:",
+            error
         );
-
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\\tan/g,
-            "tan"
-        );
-
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\\ln/g,
-            "log"
-        );
-
-    // =====================
-    // e^{x} → exp(x)
-    // =====================
-
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /e\^\{([^{}]+)\}/g,
-            "exp($1)"
-        );
-
-    // =====================
-    // MULTIPLICACIÓN IMPLÍCITA
-    // 2x → 2*x
-    // =====================
-
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /(\d)(x)/g,
-            "$1*$2"
-        );
-
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /(x)\(/g,
-            "$1*("
-        );
-
-    exprAlgebrite =
-        exprAlgebrite.replace(
-            /\)(x)/g,
-            ")*$1"
-        );
-
-    console.log(
-        "EXPRESION ALGEBRITE:",
-        exprAlgebrite
-    );
-
-    // =====================
-    // DERIVAR
-    // =====================
-
-    const derivada =
-        Algebrite.run(
-            `d(${exprAlgebrite},x)`
-        );
-
-    console.log(
-        "DERIVADA:",
-        derivada
-    );
-
-    // =====================
-    // CONVERTIR A LATEX
-    // =====================
-
-    derivadaLatex =
-        Algebrite.run(
-            `printlatex(${derivada})`
-        );
-
-    console.log(
-        "DERIVADA LATEX:",
-        derivadaLatex
-    );
-
-    // =====================
-    // VALIDAR
-    // =====================
-
-    if (
-        !derivadaLatex
-        ||
-        derivadaLatex === "nil"
-    ) {
 
         derivadaLatex =
             "\\text{No disponible}";
     }
-
-} catch (error) {
-
-    console.error(
-        "ERROR DERIVADA:",
-        error
-    );
-
-    derivadaLatex =
-        "\\text{No disponible}";
-}
 
     // =====================
     // MOSTRAR DERIVADA
     // =====================
 
     resultado.innerHTML = `
+<div style="
+    margin-bottom:24px;
+    padding:22px;
+    border-radius:22px;
+
+    background:
+    linear-gradient(
+        145deg,
+        #991b1b,
+        #7f1d1d
+    );
+
+    border:2px solid #ef4444;
+
+    box-shadow:
+        0 10px 30px rgba(239,68,68,0.18);
+
+    position:relative;
+
+    overflow:hidden;
+">
+
+    <!-- brillo decorativo -->
     <div style="
-        margin-bottom:20px;
-        padding:15px;
-        border-radius:12px;
-        background:#111827;
-        color:white;
+        position:absolute;
+        top:-40px;
+        right:-40px;
+
+        width:140px;
+        height:140px;
+
+        background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,0.15),
+            transparent
+        );
+
+        border-radius:50%;
+    "></div>
+
+    <!-- título -->
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin-bottom:18px;
     ">
 
-        <h3 style="
-            margin-bottom:10px;
-            color:#60a5fa;
-        ">
-            Derivada algebraica
-        </h3>
-
         <div style="
-            font-size:24px;
-            overflow-x:auto;
-            color:white;
+            width:42px;
+            height:42px;
+
+            border-radius:12px;
+
+            background:
+            rgba(255,255,255,0.12);
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-size:22px;
         ">
-            $$f'(x)=${derivadaLatex}$$
+            ∂
+        </div>
+
+        <div>
+
+            <h3 style="
+                margin:0;
+                color:white;
+                font-size:22px;
+                font-weight:700;
+            ">
+                Derivada algebraica
+            </h3>
+
+            <p style="
+                margin:4px 0 0 0;
+                color:#fecaca;
+                font-size:14px;
+            ">
+                Derivada simbólica de la función
+            </p>
+
         </div>
 
     </div>
+
+    <!-- fórmula -->
+    <div style="
+        padding:18px;
+
+        border-radius:18px;
+
+        background:
+        rgba(255,255,255,0.08);
+
+        border:
+        1px solid rgba(255,255,255,0.12);
+
+        overflow-x:auto;
+
+        color:white;
+
+        font-size:28px;
+
+        text-align:center;
+    ">
+
+        $$f'(x)=${derivadaLatex}$$
+
+    </div>
+
+</div>
     `;
 
     // =====================
@@ -479,94 +489,3 @@ try {
         </p>
     `;
 };
-
-
-// =====================
-// DERIVADA → LATEX
-// =====================
-
-function convertirDerivadaALatex(
-    expr
-) {
-
-    if (!expr) {
-
-        return "";
-    }
-
-    let latex = expr;
-
-    // =====================
-    // FUNCIONES
-    // =====================
-
-    latex =
-        latex.replace(
-            /sin/g,
-            "\\sin"
-        );
-
-    latex =
-        latex.replace(
-            /cos/g,
-            "\\cos"
-        );
-
-    latex =
-        latex.replace(
-            /tan/g,
-            "\\tan"
-        );
-
-    // =====================
-    // EXPONENCIAL
-    // =====================
-
-    latex =
-        latex.replace(
-            /exp\((.*?)\)/g,
-            "e^{$1}"
-        );
-
-    // =====================
-    // RAÍZ
-    // =====================
-
-    latex =
-        latex.replace(
-            /sqrt\((.*?)\)/g,
-            "\\sqrt{$1}"
-        );
-
-    // =====================
-    // POTENCIAS
-    // =====================
-
-    latex =
-        latex.replace(
-            /\^/g,
-            "^"
-        );
-
-    // =====================
-    // FRACCIONES
-    // =====================
-
-    latex =
-        latex.replace(
-            /([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)/g,
-            "\\frac{$1}{$2}"
-        );
-
-    // =====================
-    // MULTIPLICACIÓN
-    // =====================
-
-    latex =
-        latex.replace(
-            /\*/g,
-            " \\cdot "
-        );
-
-    return latex;
-}
