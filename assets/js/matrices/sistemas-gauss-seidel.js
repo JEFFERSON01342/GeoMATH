@@ -115,16 +115,16 @@ function infinityNorm(v){
 /* ===================== */
 /* GAUSS-SEIDEL */
 /* ===================== */
-function solveGaussSeidel(A, B){
+function solveGaussSeidel(
+    A,
+    B,
+    initialValues = [],
+    tolerance = 0.0000001,
+    maxIterations = 150
+){
 
     const size =
         A.length;
-
-    const tolerance =
-        0.0000001;
-
-    const maxIterations =
-        150;
 
     /* ===================== */
     /* LIMPIAR DATOS */
@@ -205,12 +205,17 @@ function solveGaussSeidel(A, B){
     /* VECTOR INICIAL */
     /* ===================== */
     let xOld =
-        Array(size)
-        .fill(0)
-        .map(
-            (_, i) =>
-                B[i] / A[i][i]
+        initialValues.map(
+            value =>
+                parseFloat(
+                    value || 0
+                )
         );
+
+    while(xOld.length < size){
+
+        xOld.push(0);
+    }
 
     let xNew =
         [...xOld];
@@ -410,6 +415,32 @@ function solveGaussSeidel(A, B){
             infinityNorm(
                 errorVector
             );
+
+        /* ===================== */
+        /* DIVERGENCIA */
+        /* ===================== */
+        if(
+            globalError > 1e10
+        ){
+
+            return {
+
+                error:
+                "El método diverge. Los valores crecieron demasiado.",
+
+                steps,
+
+                solution:
+                    xNew,
+
+                converged:
+                    false,
+
+                iterations,
+
+                warning
+            };
+        }
 
         /* ===================== */
         /* CONVERGENCIA */

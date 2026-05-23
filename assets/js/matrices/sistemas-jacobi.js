@@ -116,16 +116,16 @@ function infinityNorm(v){
 /* ===================== */
 /* JACOBI */
 /* ===================== */
-function solveJacobi(A, B){
+function solveJacobi(
+    A,
+    B,
+    initialValues = [],
+    tolerance = 0.0000001,
+    maxIterations = 150
+){
 
     const size =
         A.length;
-
-    const tolerance =
-        0.0000001;
-
-    const maxIterations =
-        150;
 
     /* ===================== */
     /* VALIDAR ENTRADA */
@@ -206,7 +206,17 @@ function solveJacobi(A, B){
     /* VECTOR INICIAL */
     /* ===================== */
     let xOld =
-        Array(size).fill(0);
+        initialValues.map(
+            value =>
+                parseFloat(
+                    value || 0
+                )
+        );
+
+    while(xOld.length < size){
+
+        xOld.push(0);
+    }
 
     let xNew =
         Array(size).fill(0);

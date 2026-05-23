@@ -62,6 +62,8 @@ sidebarButtons.forEach(
 /* ===================== */
 /* DOM REFERENCES */
 /* ===================== */
+
+/* DETERMINANTS */
 const matrixContainer =
     document.getElementById(
         "matrix-container"
@@ -82,15 +84,40 @@ const removeSizeBtn =
         "remove-size"
     );
 
+/* SYSTEMS */
+const addSystemSizeBtn =
+    document.getElementById(
+        "add-system-size"
+    );
+
+const removeSystemSizeBtn =
+    document.getElementById(
+        "remove-system-size"
+    );
+
+const initialValuesContainer =
+    document.getElementById(
+        "initial-values-container"
+    );
+
 /* ===================== */
 /* GLOBAL MATRIX STATE */
 /* ===================== */
+
+/* DETERMINANTS */
 let matrixSize = 3;
 
 let matrixData =
     createMatrixData(
         matrixSize
     );
+
+
+
+
+/* INITIAL VALUES */
+let initialValues =
+    Array(systemSize).fill("0");
 
 /* ===================== */
 /* RENDER MATRIX */
@@ -171,6 +198,72 @@ function renderMatrix(){
 
     matrixSizeDisplay.textContent =
         `${matrixSize} × ${matrixSize}`;
+}
+
+/* ===================== */
+/* RENDER INITIAL VALUES */
+/* ===================== */
+function renderInitialValues(){
+
+    if(!initialValuesContainer)
+        return;
+
+    initialValuesContainer.innerHTML =
+        "";
+
+    initialValuesContainer.style
+        .gridTemplateColumns =
+        "repeat(1, auto)";
+
+    const vars =
+        [
+            "x",
+            "y",
+            "z",
+            "w",
+            "v",
+            "u",
+            "t",
+            "s"
+        ];
+
+    for(
+        let i = 0;
+        i < systemSize;
+        i++
+    ){
+
+        const input =
+            document.createElement(
+                "input"
+            );
+
+        input.type =
+            "text";
+
+        input.className =
+            "matrix-input";
+
+        input.placeholder =
+            `${vars[i]}₀`;
+
+        input.value =
+            initialValues[i] ?? "0";
+
+        input.addEventListener(
+            "input",
+            () => {
+
+                initialValues[i] =
+                    input.value;
+            }
+        );
+
+        initialValuesContainer
+            .appendChild(
+                input
+            );
+    }
 }
 
 /* ===================== */
@@ -266,6 +359,50 @@ removeSizeBtn.addEventListener(
         renderMatrix();
     }
 );
+
+/* ===================== */
+/* SYSTEM SIZE CONTROLS */
+/* ===================== */
+if(addSystemSizeBtn){
+
+    addSystemSizeBtn.addEventListener(
+        "click",
+        () => {
+
+            setTimeout(
+                () => {
+
+                    initialValues =
+                        Array(systemSize).fill("0");
+
+                    renderInitialValues();
+
+                },
+                0
+            );
+        }
+    );
+}
+if(removeSystemSizeBtn){
+
+    removeSystemSizeBtn.addEventListener(
+        "click",
+        () => {
+
+            setTimeout(
+                () => {
+
+                    initialValues =
+                        Array(systemSize).fill("0");
+
+                    renderInitialValues();
+
+                },
+                0
+            );
+        }
+    );
+}
 
 /* ===================== */
 /* GET MATRIX */
@@ -526,6 +663,21 @@ document
         const B =
             getSystemVector();
 
+        /* ITERATIVE CONFIG */
+        const tolerance =
+            parseFloat(
+                document.getElementById(
+                    "iterative-tolerance"
+                ).value
+            );
+
+        const maxIterations =
+            parseInt(
+                document.getElementById(
+                    "iterative-max-iterations"
+                ).value
+            );
+
         if(method === "cramer"){
 
             solveCramer(
@@ -595,31 +747,39 @@ document
             const result =
                 solveJacobi(
                     A,
-                    B
+                    B,
+                    initialValues,
+                    tolerance,
+                    maxIterations
                 );
 
             renderJacobi(
                 result
             );
+
+            return;
         }
 
         if(
-    method ===
-    "gauss-seidel"
-){
+            method ===
+            "gauss-seidel"
+        ){
 
-    const result =
-        solveGaussSeidel(
-            A,
-            B
-        );
+            const result =
+                solveGaussSeidel(
+                    A,
+                    B,
+                    initialValues,
+                    tolerance,
+                    maxIterations
+                );
 
-    renderGaussSeidel(
-        result
-    );
+            renderGaussSeidel(
+                result
+            );
 
-    return;
-}
+            return;
+        }
     }
 );
 
@@ -627,3 +787,5 @@ document
 /* INIT */
 /* ===================== */
 renderMatrix();
+
+renderInitialValues();

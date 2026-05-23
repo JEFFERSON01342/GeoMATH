@@ -877,3 +877,63 @@
         font-size: 14px;
     }
 }
+
+/* ===================== */
+/* ITERATIVE CONFIG */
+/* ===================== */
+.iterative-config{
+
+    display:flex;
+
+    gap:24px;
+
+    flex-wrap:wrap;
+}
+
+.config-group{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.config-group label{
+
+    color:#991b1b;
+
+    font-weight:700;
+
+    font-size:16px;
+}
+
+.config-group input{
+
+    width:100%;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    border:2px solid #fecaca;
+
+    background:#fff5f5;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#7f1d1d;
+
+    outline:none;
+}
+
+.config-group input:focus{
+
+    border-color:#ef4444;
+
+    background:white;
+}
