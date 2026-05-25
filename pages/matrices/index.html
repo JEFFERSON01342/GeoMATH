@@ -312,29 +312,249 @@
         <!-- OPERACIONES -->
         <!-- ===================== -->
 
-        <section
-            id="screen-operations"
-            class="screen">
+        <!-- ===================== -->
+<!-- OPERACIONES -->
+<!-- ===================== -->
 
-            <div class="card placeholder-card">
+<section
+    id="screen-operations"
+    class="screen">
 
-                <div class="placeholder-content">
+    <!-- TITLE -->
+    <div class="card section-card">
 
-                    <i class="fa-solid fa-table-columns"></i>
+        <div class="section-title">
 
-                    <h2>
-                        Operaciones
-                    </h2>
+            <h2>
+                Operaciones con matrices
+            </h2>
 
-                    <p>
-                        Próximamente...
-                    </p>
+            <p>
+                Suma, resta, multiplicación,
+                transpuesta e inversa.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- OPERATIONS LAYOUT -->
+    <div class="operations-layout">
+
+        <!-- MATRIX A -->
+        <div class="card matrix-operation-card">
+
+            <div class="card-header">
+
+                <h3>
+
+                    <i class="fa-solid fa-table"></i>
+
+                    Matrix A
+
+                </h3>
+
+            </div>
+
+            <!-- SIZE -->
+            <div class="matrix-size-input-area">
+
+                <label>
+                    Tamaño
+                </label>
+
+                <input
+                    type="text"
+                    id="matrix-size-a"
+                    value="3x3"
+                    class="matrix-size-input">
+
+            </div>
+
+            <!-- MATRIX -->
+            <div class="matrix-area">
+
+                <div class="matrix-name">
+                    A =
+                </div>
+
+                <div class="matrix-wrapper">
+
+                    <div class="matrix-bracket left">
+                        (
+                    </div>
+
+                    <div
+                        id="operation-matrix-a"
+                        class="matrix-grid">
+
+                    </div>
+
+                    <div class="matrix-bracket right">
+                        )
+                    </div>
 
                 </div>
 
             </div>
 
-        </section>
+            <!-- BUTTONS -->
+            <div class="matrix-action-buttons">
+
+                <button
+                    class="solve-btn"
+                    onclick="transposeA()">
+
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+
+                    Transpuesta
+
+                </button>
+
+                <button
+                    class="solve-btn"
+                    onclick="inverseA()">
+
+                    <i class="fa-solid fa-divide"></i>
+
+                    Inversa
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CENTER BUTTONS -->
+        <div class="operations-center-buttons">
+
+            <button
+                class="solve-btn"
+                onclick="solveAddition()">
+
+                A + B
+
+            </button>
+
+            <button
+                class="solve-btn"
+                onclick="solveSubtraction()">
+
+                A − B
+
+            </button>
+
+            <button
+                class="solve-btn"
+                onclick="solveMultiplication()">
+
+                A × B
+
+            </button>
+
+        </div>
+
+        <!-- MATRIX B -->
+        <div class="card matrix-operation-card">
+
+            <div class="card-header">
+
+                <h3>
+
+                    <i class="fa-solid fa-table"></i>
+
+                    Matrix B
+
+                </h3>
+
+            </div>
+
+            <!-- SIZE -->
+            <div class="matrix-size-input-area">
+
+                <label>
+                    Tamaño
+                </label>
+
+                <input
+                    type="text"
+                    id="matrix-size-b"
+                    value="3x3"
+                    class="matrix-size-input">
+
+            </div>
+
+            <!-- MATRIX -->
+            <div class="matrix-area">
+
+                <div class="matrix-name">
+                    B =
+                </div>
+
+                <div class="matrix-wrapper">
+
+                    <div class="matrix-bracket left">
+                        (
+                    </div>
+
+                    <div
+                        id="operation-matrix-b"
+                        class="matrix-grid">
+
+                    </div>
+
+                    <div class="matrix-bracket right">
+                        )
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="matrix-action-buttons">
+
+                <button
+                    class="solve-btn"
+                    onclick="transposeB()">
+
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+
+                    Transpuesta
+
+                </button>
+
+                <button
+                    class="solve-btn"
+                    onclick="inverseB()">
+
+                    <i class="fa-solid fa-divide"></i>
+
+                    Inversa
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RESULT -->
+    <div
+        id="operations-result"
+        class="determinant-result">
+
+    </div>
+
+    <!-- PROCEDURE -->
+    <div
+        id="operations-procedure"
+        class="procedure-content">
+
+    </div>
+
+</section>
 
         <!-- ===================== -->
         <!-- SISTEMAS -->
@@ -787,6 +1007,7 @@ src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 <script src="../../assets/js/matrices/sistemas-jacobi.js"></script>
 
 <script src="../../assets/js/matrices/sistemas-gauss-seidel.js"></script>
+<script src="../../assets/js/matrices/operaciones.js"></script>
 
 <script src="../../assets/js/matrices/apariencia.js"></script>
 

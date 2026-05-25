@@ -937,3 +937,189 @@
 
     background:white;
 }
+
+/* ===================== */
+/* OPERATIONS LAYOUT */
+/* ===================== */
+.operations-layout{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:30px;
+
+    flex-wrap:wrap;
+}
+
+/* ===================== */
+/* OPERATION CARD */
+/* ===================== */
+.matrix-operation-card{
+
+    flex:1;
+
+    min-width:420px;
+}
+
+/* ===================== */
+/* SIZE INPUT AREA */
+/* ===================== */
+.matrix-size-input-area{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-bottom:25px;
+}
+
+.matrix-size-input-area label{
+
+    color:#991b1b;
+
+    font-weight:700;
+
+    font-size:16px;
+}
+
+/* ===================== */
+/* MATRIX SIZE INPUT */
+/* ===================== */
+.matrix-size-input{
+
+    width:100%;
+
+    padding:18px 20px;
+
+    border-radius:18px;
+
+    border:2px solid #fecaca;
+
+    background:#fff5f5;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#7f1d1d;
+
+    outline:none;
+
+    transition:.25s;
+}
+
+.matrix-size-input:focus{
+
+    border-color:#ef4444;
+
+    background:white;
+
+    box-shadow:
+        0 10px 25px rgba(239,68,68,.15);
+}
+
+/* ===================== */
+/* CENTER BUTTONS */
+/* ===================== */
+.operations-center-buttons{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+/* ===================== */
+/* ACTION BUTTONS */
+/* ===================== */
+.matrix-action-buttons{
+
+    display:flex;
+
+    gap:18px;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    margin-top:20px;
+}
+
+/* ===================== */
+/* SMALLER BUTTONS */
+/* ===================== */
+.matrix-action-buttons .solve-btn{
+
+    padding:16px 22px;
+
+    font-size:16px;
+}
+
+/* ===================== */
+/* OPERATIONS RESULT */
+/* ===================== */
+#operations-result{
+
+    margin-top:35px;
+}
+
+/* ===================== */
+/* RESPONSIVE */
+/* ===================== */
+@media(max-width:1200px){
+
+    .operations-layout{
+
+        flex-direction:column;
+    }
+
+    .operations-center-buttons{
+
+        flex-direction:row;
+
+        flex-wrap:wrap;
+    }
+
+    .matrix-operation-card{
+
+        width:100%;
+
+        min-width:unset;
+    }
+}
+
+/* ===================== */
+/* MOBILE */
+/* ===================== */
+@media(max-width:768px){
+
+    .matrix-action-buttons{
+
+        flex-direction:column;
+    }
+
+    .operations-center-buttons{
+
+        width:100%;
+    }
+
+    .operations-center-buttons .solve-btn{
+
+        width:100%;
+    }
+
+    .matrix-size-input{
+
+        font-size:16px;
+    }
+}
