@@ -224,8 +224,14 @@ sizeInputA.addEventListener(
                 sizeInputA.value
             );
 
-        if(!parsed)
+        if(!parsed){
+
+            alert(
+                "Formato inválido. Ejemplo: 3x4"
+            );
+
             return;
+        }
 
         operationRowsA =
             parsed.rows;
@@ -255,8 +261,14 @@ sizeInputB.addEventListener(
                 sizeInputB.value
             );
 
-        if(!parsed)
+        if(!parsed){
+
+            alert(
+                "Formato inválido. Ejemplo: 2x3"
+            );
+
             return;
+        }
 
         operationRowsB =
             parsed.rows;
@@ -440,6 +452,35 @@ function identityMatrix(size){
 }
 
 /* ===================== */
+/* AUGMENTED MATRIX */
+/* ===================== */
+function augmentedMatrixLatex(A,I){
+
+    const rows = A.map(
+        (row,i) => {
+
+            const left =
+                row.map(
+                    fractionToLatex
+                ).join(" & ");
+
+            const right =
+                I[i].map(
+                    fractionToLatex
+                ).join(" & ");
+
+            return `${left} & | & ${right}`;
+        }
+    ).join(" \\\\ ");
+
+    return `
+    \\begin{bmatrix}
+    ${rows}
+    \\end{bmatrix}
+    `;
+}
+
+/* ===================== */
 /* INVERSE */
 /* ===================== */
 function inverseMatrix(matrix){
@@ -452,6 +493,20 @@ function inverseMatrix(matrix){
 
     let I =
         identityMatrix(n);
+
+    let steps = "";
+
+    steps += `
+    <div class="pivot-info">
+
+        $$
+        [A|I]
+        =
+        ${augmentedMatrixLatex(A,I)}
+        $$
+
+    </div>
+    `;
 
     for(
         let i = 0;
@@ -469,6 +524,22 @@ function inverseMatrix(matrix){
             );
         }
 
+        steps += `
+        <div class="pivot-info">
+
+            $$
+            F_${i+1}
+            \\leftarrow
+            \\frac{
+                F_${i+1}
+            }{
+                ${fractionToLatex(pivot)}
+            }
+            $$
+
+        </div>
+        `;
+
         for(
             let j = 0;
             j < n;
@@ -482,6 +553,16 @@ function inverseMatrix(matrix){
                 I[i][j].div(pivot);
         }
 
+        steps += `
+        <div class="step-latex-matrix">
+
+            $$
+            ${augmentedMatrixLatex(A,I)}
+            $$
+
+        </div>
+        `;
+
         for(
             let k = 0;
             k < n;
@@ -493,6 +574,21 @@ function inverseMatrix(matrix){
 
             const factor =
                 A[k][i];
+
+            steps += `
+            <div class="pivot-info">
+
+                $$
+                F_${k+1}
+                \\leftarrow
+                F_${k+1}
+                -
+                (${fractionToLatex(factor)})
+                F_${i+1}
+                $$
+
+            </div>
+            `;
 
             for(
                 let j = 0;
@@ -514,10 +610,187 @@ function inverseMatrix(matrix){
                         )
                     );
             }
+
+            steps += `
+            <div class="step-latex-matrix">
+
+                $$
+                ${augmentedMatrixLatex(A,I)}
+                $$
+
+            </div>
+            `;
         }
     }
 
-    return I;
+    return {
+        inverse: I,
+        steps
+    };
+}
+
+/* ===================== */
+/* ELEMENT OPERATIONS */
+/* ===================== */
+function generateElementOperationSteps(
+    A,
+    B,
+    result,
+    operator
+){
+
+    let html = "";
+
+    for(
+        let i = 0;
+        i < A.length;
+        i++
+    ){
+
+        for(
+            let j = 0;
+            j < A[0].length;
+            j++
+        ){
+
+            const a =
+                fractionToLatex(
+                    A[i][j]
+                );
+
+            const b =
+                fractionToLatex(
+                    B[i][j]
+                );
+
+            const r =
+                fractionToLatex(
+                    result[i][j]
+                );
+
+            html += `
+            <div class="pivot-info">
+
+                $$
+                c_{${i+1},${j+1}}
+                =
+                ${a}
+                ${operator}
+                ${b}
+                =
+                ${r}
+                $$
+
+            </div>
+            `;
+        }
+    }
+
+    return html;
+}
+
+/* ===================== */
+/* MULTIPLICATION STEPS */
+/* ===================== */
+function generateMultiplicationSteps(
+    A,
+    B,
+    result
+){
+
+    let html = "";
+
+    for(
+        let i = 0;
+        i < A.length;
+        i++
+    ){
+
+        for(
+            let j = 0;
+            j < B[0].length;
+            j++
+        ){
+
+            let expression = "";
+
+            for(
+                let k = 0;
+                k < B.length;
+                k++
+            ){
+
+                expression +=
+                `(${fractionToLatex(A[i][k])})`;
+
+                expression +=
+                `(${fractionToLatex(B[k][j])})`;
+
+                if(
+                    k < B.length - 1
+                ){
+
+                    expression += "+";
+                }
+            }
+
+            html += `
+            <div class="pivot-info">
+
+                $$
+                c_{${i+1},${j+1}}
+                =
+                ${expression}
+                =
+                ${fractionToLatex(
+                    result[i][j]
+                )}
+                $$
+
+            </div>
+            `;
+        }
+    }
+
+    return html;
+}
+
+/* ===================== */
+/* TRANSPOSE STEPS */
+/* ===================== */
+function generateTransposeSteps(
+    original
+){
+
+    let html = "";
+
+    for(
+        let i = 0;
+        i < original.length;
+        i++
+    ){
+
+        for(
+            let j = 0;
+            j < original[0].length;
+            j++
+        ){
+
+            html += `
+            <div class="pivot-info">
+
+                $$
+                a_{${i+1},${j+1}}
+                \\rightarrow
+                a_{${j+1},${i+1}}
+                $$
+
+            </div>
+            `;
+        }
+    }
+
+    return html;
 }
 
 /* ===================== */
@@ -539,9 +812,7 @@ function renderOperationResult(
         <div class="step-latex-matrix">
 
             $$
-
             ${matrixToLatex(matrix)}
-
             $$
 
         </div>
@@ -562,7 +833,8 @@ function renderOperationProcedure(
     operation,
     A,
     B,
-    result
+    result,
+    extraSteps = ""
 ){
 
     operationsProcedure.innerHTML =
@@ -584,9 +856,7 @@ function renderOperationProcedure(
         <div class="step-operation">
 
             $$
-
             ${operation}
-
             $$
 
         </div>
@@ -594,9 +864,7 @@ function renderOperationProcedure(
         <div class="step-latex-matrix">
 
             $$
-
             ${matrixToLatex(A)}
-
             $$
 
         </div>
@@ -608,9 +876,7 @@ function renderOperationProcedure(
             <div class="step-latex-matrix">
 
                 $$
-
                 ${matrixToLatex(B)}
-
                 $$
 
             </div>
@@ -619,12 +885,12 @@ function renderOperationProcedure(
             ""
         }
 
+        ${extraSteps}
+
         <div class="step-latex-matrix">
 
             $$
-
             ${matrixToLatex(result)}
-
             $$
 
         </div>
@@ -676,7 +942,13 @@ function solveAddition(){
         "A+B",
         A,
         B,
-        result
+        result,
+        generateElementOperationSteps(
+            A,
+            B,
+            result,
+            "+"
+        )
     );
 }
 
@@ -718,7 +990,13 @@ function solveSubtraction(){
         "A-B",
         A,
         B,
-        result
+        result,
+        generateElementOperationSteps(
+            A,
+            B,
+            result,
+            "-"
+        )
     );
 }
 
@@ -757,7 +1035,12 @@ function solveMultiplication(){
         "A\\times B",
         A,
         B,
-        result
+        result,
+        generateMultiplicationSteps(
+            A,
+            B,
+            result
+        )
     );
 }
 
@@ -781,7 +1064,8 @@ function transposeA(){
         "A^T",
         A,
         null,
-        result
+        result,
+        generateTransposeSteps(A)
     );
 }
 
@@ -805,7 +1089,8 @@ function transposeB(){
         "B^T",
         B,
         null,
-        result
+        result,
+        generateTransposeSteps(B)
     );
 }
 
@@ -831,8 +1116,11 @@ function inverseA(){
         const A =
             getOperationMatrixA();
 
-        const result =
+        const data =
             inverseMatrix(A);
+
+        const result =
+            data.inverse;
 
         renderOperationResult(
             "A⁻¹",
@@ -843,7 +1131,8 @@ function inverseA(){
             "A^{-1}",
             A,
             null,
-            result
+            result,
+            data.steps
         );
     }
     catch(error){
@@ -876,8 +1165,11 @@ function inverseB(){
         const B =
             getOperationMatrixB();
 
-        const result =
+        const data =
             inverseMatrix(B);
+
+        const result =
+            data.inverse;
 
         renderOperationResult(
             "B⁻¹",
@@ -888,7 +1180,8 @@ function inverseB(){
             "B^{-1}",
             B,
             null,
-            result
+            result,
+            data.steps
         );
     }
     catch(error){
@@ -898,6 +1191,30 @@ function inverseB(){
         );
     }
 }
+
+/* ===================== */
+/* GLOBAL FUNCTIONS */
+/* ===================== */
+window.solveAddition =
+    solveAddition;
+
+window.solveSubtraction =
+    solveSubtraction;
+
+window.solveMultiplication =
+    solveMultiplication;
+
+window.transposeA =
+    transposeA;
+
+window.transposeB =
+    transposeB;
+
+window.inverseA =
+    inverseA;
+
+window.inverseB =
+    inverseB;
 
 /* ===================== */
 /* INIT */
