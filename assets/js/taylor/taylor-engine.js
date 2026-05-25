@@ -242,17 +242,17 @@ function () {
         }
 
         if (
-            isNaN(orden)
-            ||
-            orden < 0
-        ) {
+    isNaN(orden)
+    ||
+    orden < 0
+) {
 
-            mostrarErrorTaylor(
-                "Orden inválido."
-            );
+    mostrarErrorTaylor(
+        "Orden inválido."
+    );
 
-            return;
-        }
+    return;
+}
 
         // =====================
         // MOSTRAR FUNCIÓN
@@ -356,6 +356,30 @@ function () {
                 "VALOR:",
                 valorDerivada
             );
+
+            if (
+
+    isNaN(
+        valorDerivada
+    )
+
+    ||
+
+    !isFinite(
+        valorDerivada
+    )
+
+) {
+
+    mostrarErrorTaylor(
+
+        `La derivada de orden ${n}
+         no existe en x=${x0}`
+
+    );
+
+    return;
+}
 
             // =====================
             // FACTORIAL
@@ -676,31 +700,150 @@ function () {
         // RESULTADO FINAL
         // =====================
 
-        resultado.innerHTML =
+        // =====================
+// VALOR REAL
+// =====================
 
-        `
-        <div class="resultado-final">
+let valorReal = NaN;
 
-            <h3>
-                Aproximación final
-            </h3>
+try {
 
-            <p>
+    valorReal =
+        math.evaluate(
+            expr,
+            {
+                x: xEval
+            }
+        );
 
-                $$
+}
+catch {
 
-                f(${xEval})
-                \\approx
-                ${formatearNumero(
-                    aproximacion
-                )}
+    valorReal = NaN;
+}
 
-                $$
+// =====================
+// ERRORES
+// =====================
 
-            </p>
+let errorAbsoluto = NaN;
+let errorRelativo = NaN;
 
-        </div>
-        `;
+if (
+
+    !isNaN(valorReal)
+
+    &&
+
+    isFinite(valorReal)
+
+) {
+
+    errorAbsoluto =
+
+        Math.abs(
+
+            valorReal
+            -
+            aproximacion
+
+        );
+
+    errorRelativo =
+
+        errorAbsoluto
+
+        /
+
+        Math.abs(
+            valorReal
+        );
+}
+
+  resultado.innerHTML =
+
+`
+<div class="resultado-final">
+
+    <h3>
+        Resultado Final
+    </h3>
+
+    <p>
+
+        $$
+
+        P_${orden}(${xEval})
+        =
+        ${formatearNumero(
+            aproximacion
+        )}
+
+        $$
+
+    </p>
+
+    <p>
+
+        $$
+
+        f(${xEval})
+        =
+        ${formatearNumero(
+            valorReal
+        )}
+
+        $$
+
+    </p>
+
+    <hr>
+
+    <p>
+
+        Error absoluto:
+
+        <b>
+
+            ${formatearNumero(
+                errorAbsoluto
+            )}
+
+        </b>
+
+    </p>
+
+    <p>
+
+        Error relativo:
+
+        <b>
+
+            ${
+                isFinite(
+                    errorRelativo
+                )
+
+                ?
+
+                (
+                    errorRelativo
+                    *
+                    100
+                ).toFixed(8)
+                + "%"
+
+                :
+
+                "N/A"
+            }
+
+        </b>
+
+    </p>
+
+</div>
+`;
 
         // =====================
         // MATHJAX
