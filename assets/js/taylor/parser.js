@@ -1,8 +1,158 @@
 // =====================
 // PARSER.JS
 // TAYLOR
-// LATEX → JS
+// LATEX -> MATHJS
 // =====================
+
+
+// =====================
+// FRACCIONES ANIDADAS
+// =====================
+
+function convertirFracciones(expr) {
+
+    while (expr.includes("\\frac")) {
+
+        const inicio =
+            expr.indexOf("\\frac");
+
+        const despues =
+            expr.substring(
+                inicio + 5
+            );
+
+        if (
+            !despues.startsWith("{")
+        ) {
+
+            break;
+        }
+
+        // =====================
+        // NUMERADOR
+        // =====================
+
+        let contador = 0;
+
+        let finNum = -1;
+
+        for (
+
+            let i = 0;
+            i < despues.length;
+            i++
+
+        ) {
+
+            if (
+                despues[i] === "{"
+            ) contador++;
+
+            if (
+                despues[i] === "}"
+            ) contador--;
+
+            if (
+                contador === 0
+            ) {
+
+                finNum = i;
+
+                break;
+            }
+        }
+
+        if (
+            finNum === -1
+        ) break;
+
+        const numerador =
+
+            despues.substring(
+                1,
+                finNum
+            );
+
+        // =====================
+        // DENOMINADOR
+        // =====================
+
+        const resto =
+
+            despues.substring(
+                finNum + 1
+            );
+
+        if (
+            !resto.startsWith("{")
+        ) break;
+
+        contador = 0;
+
+        let finDen = -1;
+
+        for (
+
+            let i = 0;
+            i < resto.length;
+            i++
+
+        ) {
+
+            if (
+                resto[i] === "{"
+            ) contador++;
+
+            if (
+                resto[i] === "}"
+            ) contador--;
+
+            if (
+                contador === 0
+            ) {
+
+                finDen = i;
+
+                break;
+            }
+        }
+
+        if (
+            finDen === -1
+        ) break;
+
+        const denominador =
+
+            resto.substring(
+                1,
+                finDen
+            );
+
+        const original =
+
+            "\\frac{" +
+            numerador +
+            "}{" +
+            denominador +
+            "}";
+
+        const reemplazo =
+
+            "((" +
+            numerador +
+            ")/(" +
+            denominador +
+            "))";
+
+        expr =
+            expr.replace(
+                original,
+                reemplazo
+            );
+    }
+
+    return expr;
+}
 
 
 // =====================
@@ -19,71 +169,32 @@ function (latex) {
             return "";
         }
 
+        let expr =
+            latex.trim();
+
         // =====================
         // LIMPIAR
         // =====================
 
-        let expr =
-            latex;
-
-        // quitar espacios
         expr =
-            expr.replace(/\s+/g, "");
+            expr.replace(
+                /\s+/g,
+                ""
+            );
+
+        expr =
+            expr.replace(
+                /\\left|\\right/g,
+                ""
+            );
 
         // =====================
         // FRACCIONES
-        // \frac{a}{b}
-        // =====================
-
-        while (
-            expr.includes("\\frac")
-        ) {
-
-            expr =
-                expr.replace(
-
-                    /\\frac\{([^{}]+)\}\{([^{}]+)\}/g,
-
-                    "($1)/($2)"
-                );
-        }
-
-        // =====================
-        // RAÍCES
         // =====================
 
         expr =
-            expr.replace(
-
-                /\\sqrt\{([^{}]+)\}/g,
-
-                "sqrt($1)"
-            );
-
-        // =====================
-        // PI
-        // =====================
-
-        expr =
-            expr.replace(
-                /\\pi/g,
-                "pi"
-            );
-
-        // =====================
-        // EULER
-        // =====================
-
-        expr =
-            expr.replace(
-                /\\left/g,
-                ""
-            );
-
-        expr =
-            expr.replace(
-                /\\right/g,
-                ""
+            convertirFracciones(
+                expr
             );
 
         // =====================
@@ -120,25 +231,61 @@ function (latex) {
                 "log10"
             );
 
-        expr =
-            expr.replace(
-                /\\exp/g,
-                "exp"
-            );
-
         // =====================
-        // POTENCIAS
+        // RAIZ
         // =====================
 
         expr =
             expr.replace(
-                /\^/g,
-                "**"
+                /\\sqrt\{([^{}]+)\}/g,
+                "sqrt($1)"
             );
 
         // =====================
-        // MULTIPLICACIÓN IMPLÍCITA
-        // 2x → 2*x
+        // PI
+        // =====================
+
+        expr =
+            expr.replace(
+                /\\pi/g,
+                "pi"
+            );
+
+        // =====================
+        // e^(...)
+        // =====================
+
+        expr =
+            expr.replace(
+                /e\^\{([^{}]+)\}/g,
+                "exp($1)"
+            );
+
+        expr =
+            expr.replace(
+                /e\^\(([^()]*)\)/g,
+                "exp($1)"
+            );
+
+        expr =
+            expr.replace(
+                /e\^([a-zA-Z0-9\.\-\+]+)/g,
+                "exp($1)"
+            );
+
+        // =====================
+        // POTENCIAS LATEX
+        // x^{2}
+        // =====================
+
+        expr =
+            expr.replace(
+                /([a-zA-Z0-9\)\]])\^\{([^{}]+)\}/g,
+                "$1^($2)"
+            );
+
+        // =====================
+        // 2x -> 2*x
         // =====================
 
         expr =
@@ -148,17 +295,17 @@ function (latex) {
             );
 
         // =====================
-        // x(
+        // 2(
         // =====================
 
         expr =
             expr.replace(
-                /([a-zA-Z])\(/g,
+                /(\d)\(/g,
                 "$1*("
             );
 
         // =====================
-        // )( 
+        // )(
         // =====================
 
         expr =
@@ -178,66 +325,10 @@ function (latex) {
             );
 
         // =====================
-        // CONSTANTES
+        // VALIDAR
         // =====================
 
-        expr =
-            expr.replace(
-                /\bpi\b/g,
-                "Math.PI"
-            );
-
-        expr =
-            expr.replace(
-                /\be\b/g,
-                "Math.E"
-            );
-
-        // =====================
-        // FUNCIONES JS
-        // =====================
-
-        expr =
-            expr.replace(
-                /\bsin\(/g,
-                "Math.sin("
-            );
-
-        expr =
-            expr.replace(
-                /\bcos\(/g,
-                "Math.cos("
-            );
-
-        expr =
-            expr.replace(
-                /\btan\(/g,
-                "Math.tan("
-            );
-
-        expr =
-            expr.replace(
-                /\bsqrt\(/g,
-                "Math.sqrt("
-            );
-
-        expr =
-            expr.replace(
-                /\blog\(/g,
-                "Math.log("
-            );
-
-        expr =
-            expr.replace(
-                /\blog10\(/g,
-                "Math.log10("
-            );
-
-        expr =
-            expr.replace(
-                /\bexp\(/g,
-                "Math.exp("
-            );
+        math.parse(expr);
 
         console.log(
             "LATEX:",
@@ -245,7 +336,7 @@ function (latex) {
         );
 
         console.log(
-            "JS:",
+            "MATHJS:",
             expr
         );
 
@@ -265,7 +356,7 @@ function (latex) {
 
 
 // =====================
-// EVALUAR FUNCIÓN
+// EVALUAR FUNCION
 // =====================
 
 window.evaluarFuncionTaylor =
@@ -278,34 +369,31 @@ function (
 
     try {
 
-        const funcion =
-            new Function(
+        const valor =
 
-                "x",
+            math.evaluate(
 
-                `
-                return ${expr};
-                `
+                expr,
+
+                {
+                    x: x
+                }
             );
-
-        const resultado =
-            funcion(x);
 
         if (
 
-            isNaN(resultado)
+            isNaN(valor)
 
             ||
 
-            !isFinite(resultado)
+            !isFinite(valor)
 
         ) {
 
             return NaN;
         }
 
-        return resultado;
-
+        return valor;
     }
     catch (error) {
 
@@ -326,7 +414,9 @@ function (
 window.factorial =
 function (n) {
 
-    if (n <= 1) {
+    if (
+        n <= 1
+    ) {
 
         return 1;
     }
@@ -350,7 +440,7 @@ function (n) {
 
 
 // =====================
-// FORMATEAR NÚMERO
+// FORMATEAR NUMERO
 // =====================
 
 window.formatearNumero =
@@ -369,7 +459,12 @@ function (valor) {
         return "NaN";
     }
 
-    return Number(valor)
+    return Number(
+        valor
+    )
         .toFixed(10)
-        .replace(/\.?0+$/, "");
+        .replace(
+            /\.?0+$/,
+            ""
+        );
 };
