@@ -115,6 +115,64 @@ function crearTabla(tipo) {
 
 
 // =====================
+// CAMBIAR CATEGORÍA
+// =====================
+
+function cambiarCategoria(categoria) {
+
+    // Actualizar botones categoría
+    const botonesCat =
+        document.querySelectorAll(
+            ".categoria-btn"
+        );
+
+    botonesCat.forEach(btn => {
+
+        btn.classList.remove(
+            "activo"
+        );
+    });
+
+    document.querySelector(
+        `.categoria-btn[data-categoria="${categoria}"]`
+    ).classList.add("activo");
+
+    // Mostrar/ocultar grupos
+    const grupos =
+        document.querySelectorAll(
+            ".categoria-grupo"
+        );
+
+    grupos.forEach(grupo => {
+
+        grupo.classList.add("oculto");
+    });
+
+    document.querySelector(
+        `.categoria-grupo[data-categoria="${categoria}"]`
+    ).classList.remove("oculto");
+
+    // Limpiar selección
+    const botones =
+        document.querySelectorAll(
+            ".metodo-btn:not([disabled])"
+        );
+
+    botones.forEach(btn => {
+
+        btn.classList.remove(
+            "activo"
+        );
+    });
+
+    metodoActual =
+        null;
+
+    limpiarResultados();
+}
+
+
+// =====================
 // MOSTRAR INPUTS
 // =====================
 

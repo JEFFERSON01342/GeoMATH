@@ -52,6 +52,56 @@
 /* ===================== */
 /* BOTONES */
 /* ===================== */
+.selector-categoria{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:15px;
+
+    padding-bottom:15px;
+
+    border-bottom:2px solid #fee2e2;
+}
+
+.categoria-btn{
+
+    padding:10px 16px;
+
+    border:2px solid #ef4444;
+
+    border-radius:12px;
+
+    background:white;
+
+    color:#ef4444;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+}
+
+.categoria-btn:hover{
+
+    background:#fee2e2;
+
+    transform:scale(1.04);
+}
+
+.categoria-btn.activo{
+
+    background:#ef4444;
+
+    color:white;
+
+    box-shadow:0 4px 10px rgba(239,68,68,0.3);
+}
+
 .selector-metodo{
 
     display:flex;
@@ -59,6 +109,20 @@
     gap:10px;
 
     flex-wrap:wrap;
+}
+
+.categoria-grupo{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+.categoria-grupo.oculto{
+
+    display:none;
 }
 
 .metodo-btn{

@@ -32,6 +32,12 @@ document.addEventListener(
         );
 
         // =====================
+        // BOTONES CATEGORÍAS
+        // =====================
+
+        inicializarBotonesCategorias();
+
+        // =====================
         // BOTONES MÉTODOS
         // =====================
 
@@ -58,6 +64,37 @@ document.addEventListener(
 
 
 // =====================
+// BOTONES CATEGORÍAS
+// =====================
+
+function inicializarBotonesCategorias() {
+
+    const botones =
+        document.querySelectorAll(
+            ".categoria-btn"
+        );
+
+    botones.forEach(
+        btn => {
+
+            btn.addEventListener(
+                "click",
+                function () {
+
+                    const categoria =
+                        this.dataset.categoria;
+
+                    cambiarCategoria(
+                        categoria
+                    );
+                }
+            );
+        }
+    );
+}
+
+
+// =====================
 // BOTONES DE MÉTODO
 // =====================
 
@@ -65,7 +102,7 @@ function inicializarBotones() {
 
     const botones =
         document.querySelectorAll(
-            ".metodo-btn"
+            ".metodo-btn:not([disabled])"
         );
 
     botones.forEach(

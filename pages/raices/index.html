@@ -137,43 +137,99 @@
 
         <h2> Método numérico</h2>
 
-        <!-- BOTONES -->
+        <!-- SELECTOR CATEGORÍA -->
+        <div class="selector-categoria">
+
+            <button
+                class="categoria-btn activo"
+                data-categoria="abiertos-cerrados">
+
+                Métodos Abiertos y Cerrados
+            </button>
+
+            <button
+                class="categoria-btn"
+                data-categoria="especializados">
+
+                Métodos Especializados
+            </button>
+
+        </div>
+
+        <!-- BOTONES MÉTODOS -->
         <div class="selector-metodo">
 
-            <button
-                class="metodo-btn"
-                data-metodo="biseccion">
+            <!-- MÉTODOS ABIERTOS Y CERRADOS -->
+            <div class="categoria-grupo" data-categoria="abiertos-cerrados">
 
-                Bisección
-            </button>
+                <button
+                    class="metodo-btn"
+                    data-metodo="biseccion">
 
-            <button
-                class="metodo-btn"
-                data-metodo="reglaFalsa">
+                    Bisección
+                </button>
 
-                Regla Falsa
-            </button>
+                <button
+                    class="metodo-btn"
+                    data-metodo="reglaFalsa">
 
-            <button
-                class="metodo-btn"
-                data-metodo="newton">
+                    Regla Falsa
+                </button>
 
-                Newton Raphson
-            </button>
+                <button
+                    class="metodo-btn"
+                    data-metodo="newton">
 
-            <button
-                class="metodo-btn"
-                data-metodo="secante">
+                    Newton Raphson
+                </button>
 
-                Secante
-            </button>
+                <button
+                    class="metodo-btn"
+                    data-metodo="secante">
 
-            <button
-                class="metodo-btn"
-                data-metodo="puntoFijo">
+                    Secante
+                </button>
 
-                Punto Fijo
-            </button>
+                <button
+                    class="metodo-btn"
+                    data-metodo="puntoFijo">
+
+                    Punto Fijo
+                </button>
+
+            </div>
+
+            <!-- MÉTODOS ESPECIALIZADOS -->
+            <div class="categoria-grupo oculto" data-categoria="especializados">
+
+                <button
+                    class="metodo-btn"
+                    data-metodo="muller"
+                    disabled
+                    title="Próximamente">
+
+                    Müller (Próximamente)
+                </button>
+
+                <button
+                    class="metodo-btn"
+                    data-metodo="bairstow"
+                    disabled
+                    title="Próximamente">
+
+                    Bairstow (Próximamente)
+                </button>
+
+                <button
+                    class="metodo-btn"
+                    data-metodo="hornerNewton"
+                    disabled
+                    title="Próximamente">
+
+                    Horner-Newton (Próximamente)
+                </button>
+
+            </div>
 
         </div>
 
