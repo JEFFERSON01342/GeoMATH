@@ -91,7 +91,7 @@ function crearTabla(tipo) {
                 "xi",
                 "g(xi)",
                 "Er%",
-                "Decisión"
+                "Estado |g'(xi)|"
             ];
 
             break;

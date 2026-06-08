@@ -49,16 +49,17 @@ window.metodoPuntoFijo = function (
     // |g'(x0)| < 1
     // =====================
 
-    const derivadaInicial =
-        Math.abs(
-            window.derivadaNumerica(
-                expr,
-                x0
-            )
+    const derivadaEnX0 =
+        window.derivadaNumerica(
+            expr,
+            x0
         );
 
-    const converge =
-        derivadaInicial < 1;
+    const derivadaAbsX0 =
+        Math.abs(derivadaEnX0);
+
+    const criterioConvergencia =
+        derivadaAbsX0 < 1;
 
     // =====================
     // ITERACIONES
@@ -77,7 +78,7 @@ window.metodoPuntoFijo = function (
             );
 
         // =====================
-        // VALIDAR
+        // VALIDAR RESULTADO
         // =====================
 
         if (
@@ -87,7 +88,7 @@ window.metodoPuntoFijo = function (
         ) {
 
             resultado.innerText =
-                "Divergencia numérica";
+                "❌ Divergencia numérica";
 
             return;
         }
@@ -109,6 +110,16 @@ window.metodoPuntoFijo = function (
                 )
                 * 100
             ).toFixed(6);
+
+        // =====================
+        // DERIVADA EN PUNTO ACTUAL
+        // =====================
+
+        const derivadaEnXi =
+            window.derivadaNumerica(
+                expr,
+                xi
+            );
 
         // =====================
         // TABLA
@@ -135,9 +146,9 @@ window.metodoPuntoFijo = function (
 
             <td>
                 ${
-                    converge
-                    ? "Converge"
-                    : "Puede divergir"
+                    Math.abs(derivadaEnXi) < 1
+                    ? "✓ Converge"
+                    : "✗ Puede divergir"
                 }
             </td>
 
@@ -172,17 +183,29 @@ window.metodoPuntoFijo = function (
                 "raiz"
             );
 
+            const derivadaEnRaiz =
+                Math.abs(
+                    window.derivadaNumerica(
+                        expr,
+                        gx
+                    )
+                );
+
             resultado.innerText =
                 `
-Raíz ≈ ${gx.toFixed(6)}
+Raíz aproximada: x* ≈ ${gx.toFixed(6)}
 
-|g'(x₀)| = ${derivadaInicial.toFixed(6)}
+Validación en x*:
+|g'(x*)| = ${derivadaEnRaiz.toFixed(6)}
 
-→ ${
-    converge
-    ? "Converge"
-    : "No garantiza convergencia"
+${
+    derivadaEnRaiz < 1
+    ? "✓ Converge en esta región"
+    : "⚠ No garantiza convergencia"
 }
+
+Iteraciones: ${i}
+Error: ${Math.abs(gx - xi).toExponential(4)}
                 `;
 
             return;
@@ -198,7 +221,15 @@ Raíz ≈ ${gx.toFixed(6)}
         ) {
 
             resultado.innerText =
-                "Explosión numérica";
+                `
+❌ Explosión numérica
+
+g(${xi.toFixed(6)}) = ${gx}
+
+|g'(xi)| = ${Math.abs(derivadaEnXi).toFixed(6)} > 1
+
+La derivada es muy grande. Intenta otro g(x).
+                `;
 
             return;
         }
@@ -212,5 +243,12 @@ Raíz ≈ ${gx.toFixed(6)}
     // =====================
 
     resultado.innerText =
-        "No convergió en 50 iteraciones";
+        `
+⚠ No convergió en ${maxIter} iteraciones
+
+Última iteración:
+x${maxIter} ≈ ${xi.toFixed(6)}
+
+Verifica que |g'(x)| < 1 en la región de búsqueda.
+        `;
 };
