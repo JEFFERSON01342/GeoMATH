@@ -117,6 +117,25 @@
 
         <div id="cientifica"></div>
 
+        <!-- INPUT POLINOMIO BAIRSTOW -->
+        <div id="input-polinomio-group" style="display: none; margin-top: 15px;">
+
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">
+                Coeficientes del polinomio (de mayor a menor grado):
+            </label>
+
+            <input
+                type="text"
+                id="input-coeficientes"
+                placeholder="Ej: 4, 2, -2, -0.5"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: monospace;">
+
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                Separa con comas. Ej: para 4x³ + 2x² - 2x - 0.5 escribe: 4, 2, -2, -0.5
+            </p>
+
+        </div>
+
     </div>
 
     <!-- ===================== -->
@@ -213,11 +232,9 @@
 
                 <button
                     class="metodo-btn"
-                    data-metodo="bairstow"
-                    disabled
-                    title="Próximamente">
+                    data-metodo="bairstow">
 
-                    Bairstow (Próximamente)
+                    Bairstow
                 </button>
 
                 <button
@@ -264,6 +281,28 @@
             type="number"
             step="any"
             id="input-x0">
+    </div>
+
+    <div id="input-r-group">
+
+        <label>r:</label>
+
+        <input
+            type="number"
+            step="any"
+            id="input-r"
+            value="-1">
+    </div>
+
+    <div id="input-s-group">
+
+        <label>s:</label>
+
+        <input
+            type="number"
+            step="any"
+            id="input-s"
+            value="-0.25">
     </div>
 
     <button id="btn-iterar">
@@ -338,6 +377,8 @@
 <script src="../../assets/js/raices/metodos/secante.js"></script>
 
 <script src="../../assets/js/raices/metodos/punto-fijo.js"></script>
+
+<script src="../../assets/js/raices/metodos/bairstow.js"></script>
 
 <script src="../../assets/js/raices/raices.js"></script>
 

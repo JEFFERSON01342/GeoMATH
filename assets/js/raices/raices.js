@@ -342,6 +342,69 @@ function ejecutarMetodo() {
 
 
         // =====================
+        // BAIRSTOW
+        // =====================
+
+        case "bairstow":
+
+            if (
+                valores.r == null
+                ||
+                valores.s == null
+            ) {
+
+                alert(
+                    "Ingresa r y s"
+                );
+
+                return;
+            }
+
+            // Obtener coeficientes
+            const inputCoef =
+                document.getElementById(
+                    "input-coeficientes"
+                ).value;
+
+            if (!inputCoef.trim()) {
+
+                alert(
+                    "Ingresa los coeficientes del polinomio"
+                );
+
+                return;
+            }
+
+            const coeficientes =
+                inputCoef
+                    .split(",")
+                    .map(c =>
+                        parseFloat(c.trim())
+                    );
+
+            if (
+                coeficientes.some(
+                    c => isNaN(c)
+                )
+            ) {
+
+                alert(
+                    "Los coeficientes deben ser números válidos"
+                );
+
+                return;
+            }
+
+            metodoBarirstow(
+                coeficientes,
+                valores.r,
+                valores.s
+            );
+
+            break;
+
+
+        // =====================
         // DEFAULT
         // =====================
 

@@ -95,6 +95,22 @@ function crearTabla(tipo) {
             ];
 
             break;
+
+
+        case "bairstow":
+
+            columnas = [
+                "Iteración",
+                "r",
+                "s",
+                "b₀",
+                "b₁",
+                "Δr",
+                "Δs",
+                "Er%"
+            ];
+
+            break;
     }
 
     let fila = "<tr>";
@@ -193,6 +209,21 @@ function mostrarInputs(tipo) {
             "input-x0-group"
         );
 
+    const grupoR =
+        document.getElementById(
+            "input-r-group"
+        );
+
+    const grupoS =
+        document.getElementById(
+            "input-s-group"
+        );
+
+    const grupoPolinomio =
+        document.getElementById(
+            "input-polinomio-group"
+        );
+
     const titulo =
         document.getElementById(
             "titulo-funcion"
@@ -206,6 +237,15 @@ function mostrarInputs(tipo) {
         "none";
 
     grupoX0.style.display =
+        "none";
+
+    grupoR.style.display =
+        "none";
+
+    grupoS.style.display =
+        "none";
+
+    grupoPolinomio.style.display =
         "none";
 
     // reset labels
@@ -301,6 +341,27 @@ function mostrarInputs(tipo) {
                 "Escriba g(x) (sin poner x =)";
 
             break;
+
+
+        // =====================
+        // BAIRSTOW
+        // =====================
+
+        case "bairstow":
+
+            grupoR.style.display =
+                "block";
+
+            grupoS.style.display =
+                "block";
+
+            grupoPolinomio.style.display =
+                "block";
+
+            titulo.innerText =
+                "Ingrese los coeficientes del polinomio";
+
+            break;
     }
 }
 
@@ -351,6 +412,18 @@ function obtenerValoresMetodo() {
         ).value
     );
 
+    const r = parseFloat(
+        document.getElementById(
+            "input-r"
+        ).value
+    );
+
+    const s = parseFloat(
+        document.getElementById(
+            "input-s"
+        ).value
+    );
+
     return {
 
         a:
@@ -366,7 +439,17 @@ function obtenerValoresMetodo() {
         x0:
             isNaN(x0)
             ? null
-            : x0
+            : x0,
+
+        r:
+            isNaN(r)
+            ? null
+            : r,
+
+        s:
+            isNaN(s)
+            ? null
+            : s
     };
 }
 
