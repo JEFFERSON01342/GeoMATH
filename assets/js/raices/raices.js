@@ -342,6 +342,37 @@ function ejecutarMetodo() {
 
 
         // =====================
+        // MULLER
+        // =====================
+
+        case "muller":
+
+            if (
+                valores.a == null
+                ||
+                valores.b == null
+                ||
+                valores.x0 == null
+            ) {
+
+                alert(
+                    "Ingresa xi, xi+1 y xi+2"
+                );
+
+                return;
+            }
+
+            metodoMuller(
+                latex,
+                valores.a,
+                valores.b,
+                valores.x0
+            );
+
+            break;
+
+
+        // =====================
         // BAIRSTOW
         // =====================
 
@@ -360,37 +391,14 @@ function ejecutarMetodo() {
                 return;
             }
 
-            // Obtener coeficientes
-            const inputCoef =
-                document.getElementById(
-                    "input-coeficientes"
-                ).value;
-
-            if (!inputCoef.trim()) {
-
-                alert(
-                    "Ingresa los coeficientes del polinomio"
-                );
-
-                return;
-            }
-
             const coeficientes =
-                inputCoef
-                    .split(",")
-                    .map(c =>
-                        parseFloat(c.trim())
-                    );
+                obtenerCoeficientesBairstow(
+                    latex
+                );
 
             if (
-                coeficientes.some(
-                    c => isNaN(c)
-                )
+                !coeficientes
             ) {
-
-                alert(
-                    "Los coeficientes deben ser números válidos"
-                );
 
                 return;
             }

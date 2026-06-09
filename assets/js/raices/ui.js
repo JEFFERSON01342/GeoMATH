@@ -97,6 +97,37 @@ function crearTabla(tipo) {
             break;
 
 
+        case "muller":
+
+            columnas = [
+                "i",
+                "xi",
+                "xi+1",
+                "xi+2",
+                "f(xi)",
+                "f(xi+1)",
+                "f(xi+2)",
+                "hi",
+                "hi+1",
+                "δi",
+                "δi+1",
+                "a",
+                "b",
+                "c",
+                "b - √(b²-4ac)",
+                "b + √(b²-4ac)",
+                "|b - √(b²-4ac)|",
+                "|b + √(b²-4ac)|",
+                "2c / (b - √(b²-4ac))",
+                "2c / (b + √(b²-4ac))",
+                "xi+3",
+                "Error",
+                "DECISIÓN"
+            ];
+
+            break;
+
+
         case "bairstow":
 
             columnas = [
@@ -219,11 +250,6 @@ function mostrarInputs(tipo) {
             "input-s-group"
         );
 
-    const grupoPolinomio =
-        document.getElementById(
-            "input-polinomio-group"
-        );
-
     const titulo =
         document.getElementById(
             "titulo-funcion"
@@ -245,9 +271,6 @@ function mostrarInputs(tipo) {
     grupoS.style.display =
         "none";
 
-    grupoPolinomio.style.display =
-        "none";
-
     // reset labels
     document.querySelector(
         "#input-a-group label"
@@ -256,6 +279,10 @@ function mostrarInputs(tipo) {
     document.querySelector(
         "#input-b-group label"
     ).innerText = "b:";
+
+    document.querySelector(
+        "#input-x0-group label"
+    ).innerText = "x₀:";
 
     // reset título
     titulo.innerText =
@@ -344,6 +371,36 @@ function mostrarInputs(tipo) {
 
 
         // =====================
+        // MULLER
+        // =====================
+
+        case "muller":
+
+            grupoA.style.display =
+                "block";
+
+            grupoB.style.display =
+                "block";
+
+            grupoX0.style.display =
+                "block";
+
+            document.querySelector(
+                "#input-a-group label"
+            ).innerText = "xᵢ:";
+
+            document.querySelector(
+                "#input-b-group label"
+            ).innerText = "xᵢ₊₁:";
+
+            document.querySelector(
+                "#input-x0-group label"
+            ).innerText = "xᵢ₊₂:";
+
+            break;
+
+
+        // =====================
         // BAIRSTOW
         // =====================
 
@@ -355,11 +412,8 @@ function mostrarInputs(tipo) {
             grupoS.style.display =
                 "block";
 
-            grupoPolinomio.style.display =
-                "block";
-
             titulo.innerText =
-                "Ingrese los coeficientes del polinomio";
+                "Escriba el polinomio p(x):";
 
             break;
     }

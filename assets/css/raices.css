@@ -378,22 +378,58 @@
 /* ===================== */
 .resultado-box{
 
-    text-align:center;
+    text-align:left;
 
-    background:#fff1f2;
+    background:#fff7f7;
 
-    border:2px dashed #ef4444;
+    border:1px solid #fecaca;
+
+    box-shadow:
+        0 10px 24px rgba(153,27,27,0.08);
 }
 
 #resultado-text{
 
-    margin-top:10px;
+    margin-top:14px;
 
-    font-size:24px;
+    padding:18px;
+
+    border-radius:12px;
+
+    background:white;
+
+    border-left:5px solid #ef4444;
+
+    box-shadow:
+        inset 0 0 0 1px #fee2e2;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size:16px;
+
+    line-height:1.7;
 
     color:#b91c1c;
 
-    font-weight:bold;
+    font-weight:600;
+
+    white-space:pre-line;
+
+    overflow-x:auto;
+
+    max-width:100%;
+}
+
+#resultado-text::first-line{
+
+    color:#991b1b;
+
+    font-size:19px;
+
+    font-weight:800;
 }
 
 /* ===================== */
@@ -502,6 +538,20 @@ tr:hover{
     .gx-formula{
 
         font-size:15px;
+    }
+
+    #resultado-text{
+
+        padding:14px;
+
+        font-size:14px;
+
+        line-height:1.6;
+    }
+
+    #resultado-text::first-line{
+
+        font-size:17px;
     }
 
     .header-pro h1{
