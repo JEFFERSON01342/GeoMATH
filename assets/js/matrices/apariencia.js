@@ -638,6 +638,20 @@ solveButton.addEventListener(
 
             return;
         }
+
+        if(method === "sarrus"){
+
+            result =
+                determinantSarrus(
+                    matrix
+                );
+
+            renderDeterminantSarrus(
+                result
+            );
+
+            return;
+        }
     }
 );
 
