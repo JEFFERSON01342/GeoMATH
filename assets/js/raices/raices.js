@@ -413,6 +413,43 @@ function ejecutarMetodo() {
 
 
         // =====================
+        // HORNER-NEWTON
+        // =====================
+
+        case "hornerNewton":
+
+            if (
+                valores.x0 == null
+            ) {
+
+                alert(
+                    "Ingresa x₀"
+                );
+
+                return;
+            }
+
+            const coeficientesHorner =
+                obtenerCoeficientesHornerNewton(
+                    latex
+                );
+
+            if (
+                !coeficientesHorner
+            ) {
+
+                return;
+            }
+
+            metodoNewtonHorner(
+                coeficientesHorner,
+                valores.x0
+            );
+
+            break;
+
+
+        // =====================
         // DEFAULT
         // =====================
 

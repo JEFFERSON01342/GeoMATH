@@ -14,6 +14,12 @@ function crearTabla(tipo) {
             "#tabla-iteraciones tbody"
         );
 
+    document.getElementById(
+        "tabla-iteraciones"
+    ).classList.remove(
+        "tabla-horner-newton"
+    );
+
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
@@ -118,9 +124,11 @@ function crearTabla(tipo) {
                 "b + √(b²-4ac)",
                 "|b - √(b²-4ac)|",
                 "|b + √(b²-4ac)|",
+                "b ± √(b²-4ac)",
                 "2c / (b - √(b²-4ac))",
                 "2c / (b + √(b²-4ac))",
-                "xi+3",
+                "2c / (b ± √(b²-4ac))",
+                "xi+3 = xi+2 - 2c / (b ± √(b²-4ac))",
                 "Error",
                 "DECISIÓN"
             ];
@@ -139,6 +147,15 @@ function crearTabla(tipo) {
                 "Δr",
                 "Δs",
                 "Er%"
+            ];
+
+            break;
+
+
+        case "hornerNewton":
+
+            columnas = [
+                "Seleccione Horner-Newton para generar la tabla"
             ];
 
             break;
@@ -411,6 +428,25 @@ function mostrarInputs(tipo) {
 
             grupoS.style.display =
                 "block";
+
+            titulo.innerText =
+                "Escriba el polinomio p(x):";
+
+            break;
+
+
+        // =====================
+        // HORNER-NEWTON
+        // =====================
+
+        case "hornerNewton":
+
+            grupoX0.style.display =
+                "block";
+
+            document.querySelector(
+                "#input-x0-group label"
+            ).innerText = "x₀:";
 
             titulo.innerText =
                 "Escriba el polinomio p(x):";

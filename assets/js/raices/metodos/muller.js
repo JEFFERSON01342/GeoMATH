@@ -269,8 +269,10 @@ Esta implementación trabaja con raíces reales. Prueba otros valores iniciales 
             <td>${formatearMuller(denominadorMas)}</td>
             <td>${formatearMuller(absMenos)}</td>
             <td>${formatearMuller(absMas)}</td>
+            <td>${formatearMuller(denominador)}</td>
             <td>${formatearMuller(correccionMenos)}</td>
             <td>${formatearMuller(correccionMas)}</td>
+            <td>${formatearMuller(correccion)}</td>
             <td>${formatearMuller(xi3)}</td>
             <td>${formatearMuller(errorRel)}</td>
             <td>${decision}</td>
