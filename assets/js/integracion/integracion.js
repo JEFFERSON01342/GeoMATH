@@ -11,10 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarEjemplos();
     actualizarPreviewIntegracion();
     limpiarRenderIntegracion();
+    iniciarGraficaIntegracion();
 
     btnCalcular.addEventListener("click", calcular);
     btnLimpiar.addEventListener("click", limpiar);
-    mathField.addEventListener("input", actualizarPreviewIntegracion);
+    mathField.addEventListener("input", () => {
+        actualizarPreviewIntegracion();
+        limpiarGraficaIntegracion();
+    });
 
     function configurarEventosMetodo() {
         document.querySelectorAll(".metodo-btn").forEach(btn => {
@@ -100,10 +104,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 data = calcularMetodoRomberg(latex, a, b, n);
             }
 
+            agregarComparacionReal(data);
             renderIntegracion(data);
+            graficarIntegracion(data);
         } catch (error) {
             mostrarErrorIntegracion(error.message);
+            limpiarGraficaIntegracion();
         }
+    }
+
+    function agregarComparacionReal(data) {
+        const areaReal = calcularAreaReal(data.expresion, data.a, data.b);
+        const errorAbsoluto = Math.abs(areaReal - data.resultado);
+        const errorPorcentual =
+            Math.abs(areaReal) > 1e-12
+                ? Math.abs((errorAbsoluto / areaReal) * 100)
+                : null;
+
+        data.areaReal = areaReal;
+        data.errorAbsoluto = errorAbsoluto;
+        data.errorPorcentual = errorPorcentual;
+    }
+
+    function calcularAreaReal(expresion, a, b) {
+        const subintervalos = 2000;
+        const h = (b - a) / subintervalos;
+        let suma = evaluarFuncionIntegracion(expresion, a) + evaluarFuncionIntegracion(expresion, b);
+
+        for (let i = 1; i < subintervalos; i++) {
+            const x = a + i * h;
+            const factor = i % 2 === 0 ? 2 : 4;
+
+            suma += factor * evaluarFuncionIntegracion(expresion, x);
+        }
+
+        return (h / 3) * suma;
     }
 
     function validarEntradas(latex, a, b, n) {
@@ -135,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mathField.value = "e^{x^2}";
         actualizarPreviewIntegracion();
         limpiarRenderIntegracion();
+        limpiarGraficaIntegracion();
     }
 
     function actualizarPreviewIntegracion() {

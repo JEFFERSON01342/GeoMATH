@@ -18,6 +18,7 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/mathjs@14/lib/browser/math.js"></script>
+    <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=95ae3c138c5845289c3d45408fc8839f"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
@@ -152,6 +153,14 @@
                 </div>
 
                 <div class="card">
+                    <h2>Grafica y area bajo la curva</h2>
+                    <div id="grafica-integracion"></div>
+                    <div id="comparacion-area" class="comparacion-area">
+                        Aqui aparecera la comparacion de areas...
+                    </div>
+                </div>
+
+                <div class="card">
                     <h2>Procedimiento paso a paso</h2>
                     <div id="procedimiento-container"></div>
                 </div>
@@ -195,6 +204,7 @@
     <script src="../../assets/js/integracion/rectangulo.js"></script>
     <script src="../../assets/js/integracion/trapecio.js"></script>
     <script src="../../assets/js/integracion/romberg.js"></script>
+    <script src="../../assets/js/integracion/desmos.js"></script>
     <script src="../../assets/js/integracion/integracion.js"></script>
 </body>
 

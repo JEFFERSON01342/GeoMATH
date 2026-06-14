@@ -19,6 +19,7 @@ window.limpiarRenderIntegracion = function () {
     setHTMLIntegracion("sustitucion-container", "Aqui aparecera la sustitucion...");
     setHTMLIntegracion("resultado-container", "Aqui aparecera el resultado...");
     setHTMLIntegracion("procedimiento-container", "");
+    setHTMLIntegracion("comparacion-area", "Aqui aparecera la comparacion de areas...");
 
     const thead = document.querySelector("#tabla-puntos thead");
     const tbody = document.querySelector("#tabla-puntos tbody");
@@ -226,6 +227,33 @@ function renderResultadoComun(data) {
             <h3>Resultado final</h3>
             <p>Metodo: <b>${data.metodo}</b></p>
             <p>Integral aproximada: <b>${formatearNumeroIntegracion(data.resultado, 12)}</b></p>
+            <p>Area real: <b>${formatearNumeroIntegracion(data.areaReal, 12)}</b></p>
+            <p>Error absoluto: <b>${formatearNumeroIntegracion(data.errorAbsoluto, 12)}</b></p>
+            <p>Error porcentual: <b>${data.errorPorcentual === null ? "No definido" : formatearNumeroIntegracion(data.errorPorcentual, 8) + "%"}</b></p>
+        </div>
+        `
+    );
+
+    setHTMLIntegracion(
+        "comparacion-area",
+        `
+        <div class="area-resumen">
+            <div>
+                <span>Area real</span>
+                <strong>${formatearNumeroIntegracion(data.areaReal, 12)}</strong>
+            </div>
+            <div>
+                <span>Area por ${data.metodo}</span>
+                <strong>${formatearNumeroIntegracion(data.resultado, 12)}</strong>
+            </div>
+            <div>
+                <span>Error</span>
+                <strong>${formatearNumeroIntegracion(data.errorAbsoluto, 12)}</strong>
+            </div>
+            <div>
+                <span>Error porcentual</span>
+                <strong>${data.errorPorcentual === null ? "No definido" : formatearNumeroIntegracion(data.errorPorcentual, 8) + "%"}</strong>
+            </div>
         </div>
         `
     );

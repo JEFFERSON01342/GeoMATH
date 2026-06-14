@@ -231,6 +231,47 @@ tr:hover {
     font-size: 18px;
 }
 
+#grafica-integracion {
+    height: 520px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid #ef4444;
+    box-shadow: 0 4px 12px rgba(239,68,68,0.15);
+}
+
+.comparacion-area {
+    margin-top: 18px;
+}
+
+.area-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.area-resumen div {
+    border: 2px solid #fecaca;
+    border-radius: 16px;
+    background: #fff5f5;
+    padding: 16px;
+}
+
+.area-resumen span,
+.area-resumen strong {
+    display: block;
+}
+
+.area-resumen span {
+    color: #991b1b;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.area-resumen strong {
+    color: #111827;
+    overflow-wrap: anywhere;
+}
+
 .paso-card {
     margin-top: 20px;
     border-radius: 20px;
