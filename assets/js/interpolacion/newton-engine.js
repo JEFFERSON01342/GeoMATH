@@ -565,6 +565,10 @@ function simplificarPolinomio(
             `P_n(x)=${latexFinal}`
         );
 
+        // Guardar polinomio para visualización
+        window.polinomioNewtonLatex = latexFinal;
+        window.datosActuales = datos;
+
         refrescarMathJax();
 
     }

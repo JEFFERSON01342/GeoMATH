@@ -91,6 +91,8 @@ function () {
         splines
     };
 
+    window.datosActuales = datos;
+
     mostrarTablaOrdenadaTrazadores(
         datos
     );

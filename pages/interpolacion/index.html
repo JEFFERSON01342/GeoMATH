@@ -48,6 +48,9 @@
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
 
+    <!-- DESMOS API -->
+    <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=95ae3c138c5845289c3d45408fc8839f"></script>
+
 </head>
 
 <body>
@@ -401,6 +404,45 @@
             </div>
 
             <!-- ================================= -->
+            <!-- VISUALIZACIÓN GRÁFICA -->
+            <!-- ================================= -->
+
+            <div class="card">
+
+                <h2>
+                    Gráfico - Trazadores Cúbicos
+                </h2>
+
+                <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                    Visualización interactiva con Desmos. Cada color representa un segmento diferente. Los puntos rojos son los datos.
+                </p>
+
+                <div class="acciones-container">
+
+                    <button
+                        id="btn-graficar-splines">
+
+                        📊 Generar Gráfico
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="desmos-container"
+                    style="width: 100%; height: 500px; margin-top: 15px; border-radius: 8px; overflow: hidden; display: none;">
+
+                </div>
+
+                <div
+                    id="grafico-mensaje"
+                    style="color: #999; font-size: 13px; text-align: center; padding: 30px;">
+                    El gráfico aparecerá aquí cuando calcules los trazadores
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
             <!-- VERIFICACIÓN -->
             <!-- ================================= -->
 
@@ -443,6 +485,8 @@
 <script src="../../assets/js/interpolacion/lagrange.js"></script>
 
 <script src="../../assets/js/interpolacion/trazadores-cubicos.js"></script>
+
+<script src="../../assets/js/interpolacion/visualizacion-desmos.js"></script>
 
 </body>
 

@@ -407,6 +407,10 @@ function simplificarLagrange(
             </div>
             `;
 
+        // Guardar polinomio para visualización
+        window.polinomioLagrangeLatex = latexFinal;
+        window.datosActuales = datos;
+
         refrescarMathJax();
 
     }
