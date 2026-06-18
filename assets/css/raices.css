@@ -386,6 +386,10 @@
 
     box-shadow:
         0 10px 24px rgba(153,27,27,0.08);
+
+    min-width:0;
+
+    overflow:hidden;
 }
 
 #resultado-text{
@@ -421,6 +425,95 @@
     overflow-x:auto;
 
     max-width:100%;
+
+    min-width:0;
+}
+
+.newton-derivada-card{
+
+    max-width:100%;
+
+    min-width:0;
+
+    margin-bottom:16px !important;
+
+    padding:16px !important;
+
+    border-radius:16px !important;
+
+    white-space:normal;
+}
+
+.newton-derivada-card *{
+
+    white-space:normal;
+}
+
+.newton-derivada-formula{
+
+    max-width:100%;
+
+    min-width:0;
+
+    overflow-x:auto !important;
+
+    overflow-y:hidden;
+
+    padding:12px !important;
+
+    font-size:22px !important;
+
+    text-align:center;
+}
+
+.newton-derivada-formula mjx-container[display="true"]{
+
+    margin:0 !important;
+}
+
+.newton-resultado-card{
+
+    margin-top:14px !important;
+
+    padding:14px 16px !important;
+
+    border-radius:14px !important;
+
+    font-size:16px !important;
+
+    line-height:1.45 !important;
+
+    white-space:normal;
+}
+
+.newton-resultado-card br{
+
+    display:none;
+}
+
+.newton-resultado-card br + br{
+
+    display:block;
+
+    content:"";
+
+    margin-top:8px;
+}
+
+#resultado-text mjx-container{
+
+    max-width:100%;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+}
+
+#resultado-text mjx-container[display="true"]{
+
+    display:block;
+
+    padding-bottom:6px;
 }
 
 #resultado-text::first-line{
@@ -561,6 +654,20 @@ tr:hover{
         font-size:14px;
 
         line-height:1.6;
+    }
+
+    .newton-derivada-card{
+
+        padding:16px !important;
+
+        border-radius:16px !important;
+    }
+
+    .newton-derivada-formula{
+
+        padding:12px !important;
+
+        font-size:20px !important;
     }
 
     #resultado-text::first-line{

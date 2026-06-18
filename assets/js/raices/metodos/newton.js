@@ -149,7 +149,7 @@ window.metodoNewton = function (
     // =====================
 
     resultado.innerHTML = `
-<div style="
+<div class="newton-derivada-card" style="
     margin-bottom:24px;
     padding:22px;
     border-radius:22px;
@@ -242,7 +242,7 @@ window.metodoNewton = function (
     </div>
 
     <!-- fórmula -->
-    <div style="
+    <div class="newton-derivada-formula" style="
         padding:18px;
 
         border-radius:18px;
@@ -481,7 +481,7 @@ window.metodoNewton = function (
             );
 
             resultado.innerHTML += `
-                <div style="
+                <div class="newton-resultado-card" style="
                     margin-top:20px;
                     padding:18px;
 
@@ -562,7 +562,7 @@ window.metodoNewton = function (
     );
 
     resultado.innerHTML += `
-        <div style="
+        <div class="newton-resultado-card" style="
             margin-top:20px;
             padding:18px;
 

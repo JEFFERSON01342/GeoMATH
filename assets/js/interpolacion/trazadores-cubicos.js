@@ -51,28 +51,31 @@ function () {
             a.x - b.x
     );
 
-    const n =
-        datos.length;
-
     // =====================
-    // LIMPIAR PASOS
+    // LIMPIAR TODOS LOS RESULTADOS PREVIOS
     // =====================
 
-    document.getElementById(
-        "procedimiento-diferencias"
-    ).innerHTML = "";
+    const ids = [
+        "tabla-newton-container",
+        "procedimiento-diferencias",
+        "coeficientes-container",
+        "construccion-container",
+        "simplificacion-container",
+        "polinomio-final-container",
+        "evaluacion-container",
+        "verificacion-container"
+    ];
 
-    document.getElementById(
-        "tabla-newton-container"
-    ).innerHTML = "";
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.innerHTML = "";
+        }
+    });
 
-    document.getElementById(
-        "coeficientes-container"
-    ).innerHTML = "";
-
-    document.getElementById(
-        "construccion-container"
-    ).innerHTML = "";
+    // =====================
+    // MOSTRAR PROCEDIMIENTO PASO A PASO
+    // =====================
 
     // =====================
     // CALCULAR TRAZADORES
@@ -83,13 +86,17 @@ function () {
             datos
         );
 
-    // =====================
-    // MOSTRAR ECUACIONES
-    // =====================
-
-    mostrarEcuacionesSplines(
+    window.trazadoresActuales = {
         datos,
         splines
+    };
+
+    mostrarTablaOrdenadaTrazadores(
+        datos
+    );
+
+    mostrarProcedimientoTrazadoresCompleto(
+        datos
     );
 
     // =====================
@@ -97,6 +104,23 @@ function () {
     // =====================
 
     mostrarCoeficientesSplines(
+        splines
+    );
+
+    // =====================
+    // MOSTRAR ECUACIONES FINALES
+    // =====================
+
+    mostrarEcuacionesSplines(
+        datos,
+        splines
+    );
+
+    mostrarSistemaTrazadores(
+        datos
+    );
+
+    mostrarSplinePorPartes(
         splines
     );
 
@@ -242,54 +266,166 @@ function calcularSplines(datos) {
 
 
 // =====================
-// MOSTRAR ECUACIONES
+// MOSTRAR PROCEDIMIENTO PASO A PASO
 // =====================
 
-function mostrarEcuacionesSplines(
-    datos,
-    splines
+function mostrarProcedimientoTrazadores(
+    datos
 ) {
 
-    let html =
-        `<div class="splines-ecuaciones">`;
+    const n = datos.length;
+    let html = `<div class="splines-procedimiento">`;
 
-    splines.forEach(
-        (s, i) => {
+    // =====================
+    // PASO 1: INTERPOLACIÓN
+    // =====================
 
-            const xi =
-                s.x0.toFixed(2);
+    html += `
+        <div class="paso-card">
+            <h3>Paso 1: Condiciones de Interpolación (${2*(n-1)} ecuaciones)</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                Cada spline debe pasar por los extremos de su intervalo.
+            </p>
+            <div class="ecuaciones-interpolacion">
+    `;
 
-            const xi1 =
-                s.x1.toFixed(2);
+    for (let i = 0; i < n - 1; i++) {
+        html += `
+            <div style="margin: 5px 0; padding-left: 15px;">
+                <p style="font-size: 12px;">
+                    $$S_${i}(${datos[i].x.toFixed(4)}) = ${datos[i].fx.toFixed(4)}$$
+                </p>
+            </div>
+            <div style="margin: 5px 0; padding-left: 15px;">
+                <p style="font-size: 12px;">
+                    $$S_${i}(${datos[i+1].x.toFixed(4)}) = ${datos[i+1].fx.toFixed(4)}$$
+                </p>
+            </div>
+        `;
+    }
 
-            const a =
-                s.a.toFixed(4);
+    html += `
+            </div>
+        </div>
+    `;
 
-            const b =
-                s.b.toFixed(6);
+    // =====================
+    // PASO 2: CONTINUIDAD DERIVADA PRIMERA
+    // =====================
 
-            const c =
-                s.c.toFixed(6);
+    html += `
+        <div class="paso-card">
+            <h3>Paso 2: Continuidad de Primera Derivada (${n-2} ecuaciones)</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                Para que no haya "quiebres" en la curva: \$S_i'(x_{i+1}) = S_{i+1}'(x_{i+1})\$
+            </p>
+            <p style="color: #999; font-size: 12px; margin-bottom: 8px;">
+                Donde \$S_i'(x) = 3a_i x^2 + 2b_i x + c_i\$
+            </p>
+            <div class="ecuaciones-derivadas">
+    `;
 
-            const d =
-                s.d.toFixed(6);
+    for (let i = 1; i < n - 1; i++) {
+        html += `
+            <div style="margin: 5px 0; padding-left: 15px;">
+                <p style="font-size: 12px;">
+                    $$S_{${i-1}}'(${datos[i].x.toFixed(4)}) = S_{${i}}'(${datos[i].x.toFixed(4)})$$
+                </p>
+            </div>
+        `;
+    }
 
-            html +=
-                `
-                <div class="spline-paso">
-                    <h3>
-                        S<sub>${i}</sub>(x) para x ∈ [${xi}, ${xi1}]
-                    </h3>
-                    <div class="latex-box">
-                        $$S_${i}(x) = ${a} + ${b}(x-${xi}) + ${c}(x-${xi})^2 + ${d}(x-${xi})^3$$
-                    </div>
-                    <p style="font-size: 13px; color: #666; margin-top: 8px;">
-                        a = ${a}, b = ${b}, c = ${c}, d = ${d}
+    html += `
+            </div>
+        </div>
+    `;
+
+    // =====================
+    // PASO 3: CONTINUIDAD DERIVADA SEGUNDA
+    // =====================
+
+    html += `
+        <div class="paso-card">
+            <h3>Paso 3: Continuidad de Segunda Derivada (${n-2} ecuaciones)</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                Para que la curvatura también sea suave: \$S_i''(x_{i+1}) = S_{i+1}''(x_{i+1})\$
+            </p>
+            <p style="color: #999; font-size: 12px; margin-bottom: 8px;">
+                Donde \$S_i''(x) = 6a_i x + 2b_i\$
+            </p>
+            <div class="ecuaciones-derivadas-segunda">
+    `;
+
+    for (let i = 1; i < n - 1; i++) {
+        html += `
+            <div style="margin: 5px 0; padding-left: 15px;">
+                <p style="font-size: 12px;">
+                    $$S_{${i-1}}''(${datos[i].x.toFixed(4)}) = S_{${i}}''(${datos[i].x.toFixed(4)})$$
+                </p>
+            </div>
+        `;
+    }
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    // =====================
+    // PASO 4: CONDICIONES DE FRONTERA
+    // =====================
+
+    html += `
+        <div class="paso-card">
+            <h3>Paso 4: Condiciones de Frontera Natural (2 ecuaciones)</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                En los extremos, la segunda derivada es cero (spline natural):
+            </p>
+            <div class="ecuaciones-frontera">
+                <div style="margin: 5px 0; padding-left: 15px;">
+                    <p style="font-size: 12px;">
+                        $$S_0''(${datos[0].x.toFixed(4)}) = 0$$
                     </p>
                 </div>
-                `;
-        }
-    );
+                <div style="margin: 5px 0; padding-left: 15px;">
+                    <p style="font-size: 12px;">
+                        $$S_{${n-2}}''(${datos[n-1].x.toFixed(4)}) = 0$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // =====================
+    // RESUMEN DE ECUACIONES
+    // =====================
+
+    html += `
+        <div class="paso-card" style="background-color: #f0f7ff; border-left: 4px solid #2196F3;">
+            <h3 style="color: #1976D2;">Resumen: Total de Ecuaciones</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div>
+                    <p><strong>Ecuación</strong></p>
+                    <p>Interpolación</p>
+                    <p>Derivada 1ª</p>
+                    <p>Derivada 2ª</p>
+                    <p>Frontera</p>
+                    <p style="border-top: 2px solid #1976D2; padding-top: 8px;"><strong>Total</strong></p>
+                </div>
+                <div>
+                    <p><strong>Cantidad</strong></p>
+                    <p>${2*(n-1)}</p>
+                    <p>${n-2}</p>
+                    <p>${n-2}</p>
+                    <p>2</p>
+                    <p style="border-top: 2px solid #1976D2; padding-top: 8px;"><strong>${2*(n-1) + 2*(n-2) + 2}</strong></p>
+                </div>
+            </div>
+            <p style="margin-top: 12px; color: #555; font-size: 13px;">
+                Tenemos <strong>${2*(n-1) + 2*(n-2) + 2}</strong> ecuaciones y <strong>${4*(n-1)}</strong> incógnitas (${n-1} splines × 4 coeficientes)
+            </p>
+        </div>
+    `;
 
     html += `</div>`;
 
@@ -301,9 +437,477 @@ function mostrarEcuacionesSplines(
 }
 
 
+function mostrarTablaOrdenadaTrazadores(
+    datos
+) {
+
+    let html =
+        `
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>i</th>
+                        <th>x_i</th>
+                        <th>y_i</th>
+                        <th>h_i=x_{i+1}-x_i</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+    datos.forEach((p, i) => {
+        const h =
+            i < datos.length - 1
+                ? fmt(datos[i + 1].x - p.x)
+                : "-";
+
+        html += `
+            <tr>
+                <td>${i}</td>
+                <td>${fmt(p.x)}</td>
+                <td>${fmt(p.fx)}</td>
+                <td>${h}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    document.getElementById(
+        "tabla-newton-container"
+    ).innerHTML = html;
+}
+
+
+function mostrarSistemaTrazadores(
+    datos
+) {
+
+    const segmentos =
+        datos.length - 1;
+
+    let html =
+        `
+        <div class="splines-ecuaciones">
+            <div class="paso-card">
+                <h3>Sistema lineal AX=B</h3>
+                <p>Estas son las ecuaciones que se juntan para resolver los coeficientes globales.</p>
+                <div class="latex-box">
+                    $$X=\\begin{bmatrix}${formatearVectorCoeficientesLatex(segmentos)}\\end{bmatrix}$$
+                </div>
+                <div class="trazadores-lista">
+        `;
+
+    obtenerEcuacionesSistemaTrazadores(
+        datos
+    ).forEach((ecuacion, i) => {
+        html += `
+            <div class="trazador-linea">
+                <strong>E${i + 1}</strong>
+                $$${ecuacion}$$
+            </div>
+        `;
+    });
+
+    html += `
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById(
+        "simplificacion-container"
+    ).innerHTML = html;
+
+    refrescarMathJax();
+}
+
+
+function mostrarSplinePorPartes(
+    splines
+) {
+
+    const partes =
+        splines.map((s, i) => {
+            const g =
+                convertirCoeficientesGlobales(s);
+
+            return `
+                ${formatearPolinomioGlobal(g)},&
+                ${fmt(s.x0)}\\le x\\le ${fmt(s.x1)}
+            `;
+        }).join("\\\\");
+
+    const html =
+        `
+        <div class="polinomio-final">
+            <h2>Spline cubico natural</h2>
+            <div class="latex-box spline-final-box">
+                $$S(x)=\\begin{cases}
+                    ${partes}
+                \\end{cases}$$
+            </div>
+        </div>
+    `;
+
+    document.getElementById(
+        "polinomio-final-container"
+    ).innerHTML = html;
+
+    refrescarMathJax();
+}
+
+
+function obtenerEcuacionesSistemaTrazadores(
+    datos
+) {
+
+    const ecuaciones = [];
+    const segmentos =
+        datos.length - 1;
+
+    for (let i = 0; i < segmentos; i++) {
+        ecuaciones.push(
+            ecuacionInterpolacion(i, datos[i].x, datos[i].fx)
+        );
+
+        ecuaciones.push(
+            ecuacionInterpolacion(i, datos[i + 1].x, datos[i + 1].fx)
+        );
+    }
+
+    for (let i = 1; i < datos.length - 1; i++) {
+        ecuaciones.push(
+            ecuacionDerivadaPrimera(i - 1, i, datos[i].x)
+        );
+    }
+
+    for (let i = 1; i < datos.length - 1; i++) {
+        ecuaciones.push(
+            ecuacionDerivadaSegunda(i - 1, i, datos[i].x)
+        );
+    }
+
+    ecuaciones.push(
+        `6a_0(${fmt(datos[0].x)})+2b_0=0`
+    );
+
+    ecuaciones.push(
+        `6a_${segmentos - 1}(${fmt(datos[datos.length - 1].x)})+2b_${segmentos - 1}=0`
+    );
+
+    return ecuaciones;
+}
+
+
+function ecuacionInterpolacion(
+    i,
+    x,
+    y
+) {
+
+    return `${fmtPotencia(x, 3)}a_${i}+${fmtPotencia(x, 2)}b_${i}+${fmt(x)}c_${i}+d_${i}=${fmt(y)}`;
+}
+
+
+function ecuacionDerivadaPrimera(
+    izquierda,
+    derecha,
+    x
+) {
+
+    return `${fmt(3 * x * x)}a_${izquierda}+${fmt(2 * x)}b_${izquierda}+c_${izquierda}`
+        + `=${fmt(3 * x * x)}a_${derecha}+${fmt(2 * x)}b_${derecha}+c_${derecha}`;
+}
+
+
+function ecuacionDerivadaSegunda(
+    izquierda,
+    derecha,
+    x
+) {
+
+    return `${fmt(6 * x)}a_${izquierda}+2b_${izquierda}`
+        + `=${fmt(6 * x)}a_${derecha}+2b_${derecha}`;
+}
+
+
+function convertirCoeficientesGlobales(
+    s
+) {
+
+    const a =
+        s.d;
+
+    const b =
+        s.c - 3 * s.d * s.x0;
+
+    const c =
+        s.b - 2 * s.c * s.x0 + 3 * s.d * s.x0 * s.x0;
+
+    const d =
+        s.a - s.b * s.x0 + s.c * s.x0 * s.x0 - s.d * s.x0 * s.x0 * s.x0;
+
+    return {
+        a,
+        b,
+        c,
+        d
+    };
+}
+
+
+function formatearPolinomioGlobal(
+    g
+) {
+
+    return `${fmt(g.a)}x^3${fmtTermino(g.b, "x^2")}${fmtTermino(g.c, "x")}${fmtTermino(g.d, "")}`;
+}
+
+
+function fmtTermino(
+    valor,
+    variable
+) {
+
+    const signo =
+        valor >= 0
+            ? "+"
+            : "-";
+
+    return `${signo}${fmt(Math.abs(valor))}${variable}`;
+}
+
+
+function fmtPotencia(
+    x,
+    potencia
+) {
+
+    return fmt(
+        Math.pow(x, potencia)
+    );
+}
+
+
+function fmt(
+    valor,
+    decimales = 4
+) {
+
+    if (
+        !isFinite(valor)
+    ) {
+        return String(valor);
+    }
+
+    return Number(valor)
+        .toFixed(decimales)
+        .replace(/\.?0+$/, "");
+}
+
+
+function formatearPuntosTrazadores(
+    datos
+) {
+
+    return datos
+        .map(p => `(${fmt(p.x)},${fmt(p.fx)})`)
+        .join(",");
+}
+
+
+function formatearVectorCoeficientes(
+    segmentos
+) {
+
+    const coeficientes = [];
+
+    for (let i = 0; i < segmentos; i++) {
+        coeficientes.push(
+            `a_${i}`,
+            `b_${i}`,
+            `c_${i}`,
+            `d_${i}`
+        );
+    }
+
+    return coeficientes.join(", ");
+}
+
+
+function formatearVectorCoeficientesLatex(
+    segmentos
+) {
+
+    const coeficientes = [];
+
+    for (let i = 0; i < segmentos; i++) {
+        coeficientes.push(
+            `a_${i}`,
+            `b_${i}`,
+            `c_${i}`,
+            `d_${i}`
+        );
+    }
+
+    return coeficientes.join("\\\\");
+}
+
+
 // =====================
 // MOSTRAR COEFICIENTES
 // =====================
+
+function mostrarProcedimientoTrazadoresCompleto(
+    datos
+) {
+
+    const segmentos =
+        datos.length - 1;
+
+    let html =
+        `<div class="splines-procedimiento">`;
+
+    html += `
+        <div class="paso-card">
+            <h3>Paso 1: Ordenar los datos</h3>
+            <p>Los puntos se ordenan de menor a mayor segun x.</p>
+            <div class="latex-box">
+                $$${formatearPuntosTrazadores(datos)}$$
+            </div>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 2: Construir los polinomios por intervalo</h3>
+            <p>Con ${datos.length} puntos hay ${segmentos} intervalos.</p>
+            <div class="latex-box">
+                $$S_i(x)=a_i x^3+b_i x^2+c_i x+d_i$$
+                $$i=0,1,\\ldots,${segmentos - 1}$$
+            </div>
+            <div class="trazadores-lista">
+                ${datos.slice(0, -1).map((p, i) => `
+                    <div class="trazador-linea">
+                        $$S_${i}(x),\\quad ${fmt(p.x)}\\le x\\le ${fmt(datos[i + 1].x)}$$
+                    </div>
+                `).join("")}
+            </div>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 3: Contar incognitas</h3>
+            <p>Cada polinomio tiene 4 coeficientes: a_i, b_i, c_i y d_i.</p>
+            <div class="latex-box">
+                $$4n=4(${segmentos})=${4 * segmentos}$$
+            </div>
+            <p>Se necesitan ${4 * segmentos} ecuaciones para resolver todos los coeficientes.</p>
+        </div>
+    `;
+
+    html += `
+        <div class="paso-card">
+            <h3>Paso 4: Condicion de interpolacion (${2 * segmentos} ecuaciones)</h3>
+            <p>Cada spline debe pasar por los extremos de su intervalo.</p>
+            <div class="trazadores-lista">
+    `;
+
+    for (let i = 0; i < segmentos; i++) {
+        html += `
+            <div class="trazador-linea">
+                $$S_${i}(${fmt(datos[i].x)})=${fmt(datos[i].fx)}$$
+                $$S_${i}(${fmt(datos[i + 1].x)})=${fmt(datos[i + 1].fx)}$$
+            </div>
+        `;
+    }
+
+    html += `
+            </div>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 5: Continuidad de la primera derivada (${segmentos - 1} ecuaciones)</h3>
+            <p>Para que no existan esquinas, las pendientes coinciden en cada punto interior.</p>
+            <div class="latex-box">
+                $$S_i'(x)=3a_i x^2+2b_i x+c_i$$
+            </div>
+            <div class="trazadores-lista">
+    `;
+
+    for (let i = 1; i < datos.length - 1; i++) {
+        html += `
+            <div class="trazador-linea">
+                $$S_${i - 1}'(${fmt(datos[i].x)})=S_${i}'(${fmt(datos[i].x)})$$
+            </div>
+        `;
+    }
+
+    html += `
+            </div>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 6: Continuidad de la segunda derivada (${segmentos - 1} ecuaciones)</h3>
+            <p>Para mantener suavidad y concavidad, tambien coinciden las segundas derivadas.</p>
+            <div class="latex-box">
+                $$S_i''(x)=6a_i x+2b_i$$
+            </div>
+            <div class="trazadores-lista">
+    `;
+
+    for (let i = 1; i < datos.length - 1; i++) {
+        html += `
+            <div class="trazador-linea">
+                $$S_${i - 1}''(${fmt(datos[i].x)})=S_${i}''(${fmt(datos[i].x)})$$
+            </div>
+        `;
+    }
+
+    html += `
+            </div>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 7: Aplicar condiciones de frontera</h3>
+            <p>Se usa spline cubico natural: la segunda derivada vale cero en los extremos.</p>
+            <div class="latex-box">
+                $$S_0''(${fmt(datos[0].x)})=0$$
+                $$S_${segmentos - 1}''(${fmt(datos[datos.length - 1].x)})=0$$
+            </div>
+        </div>
+
+        <div class="paso-card resumen-spline">
+            <h3>Paso 8: Resolver el sistema</h3>
+            <p>Al juntar todas las ecuaciones se obtiene:</p>
+            <div class="latex-box">
+                $$AX=B$$
+            </div>
+            <p>El vector X contiene ${4 * segmentos} coeficientes: ${formatearVectorCoeficientes(segmentos)}.</p>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 9: Escribir el spline completo</h3>
+            <p>Con los coeficientes calculados se escribe una funcion por partes, una expresion para cada intervalo.</p>
+        </div>
+
+        <div class="paso-card">
+            <h3>Paso 10: Interpolar el valor pedido</h3>
+            <p>Cuando ingresas un valor de x, la app identifica el intervalo correspondiente y evalua ese tramo.</p>
+        </div>
+    `;
+
+    html += `</div>`;
+
+    document.getElementById(
+        "procedimiento-diferencias"
+    ).innerHTML = html;
+
+    refrescarMathJax();
+}
 
 function mostrarCoeficientesSplines(
     splines
@@ -314,11 +918,12 @@ function mostrarCoeficientesSplines(
             <table>
                 <thead>
                     <tr>
+                        <th>Spline</th>
                         <th>Intervalo</th>
-                        <th>a</th>
-                        <th>b</th>
-                        <th>c</th>
-                        <th>d</th>
+                        <th>a local</th>
+                        <th>b local</th>
+                        <th>c local</th>
+                        <th>d local</th>
                     </tr>
                 </thead>
                 <tbody>`;
@@ -329,11 +934,12 @@ function mostrarCoeficientesSplines(
             html +=
                 `
                 <tr>
-                    <td>[${s.x0.toFixed(2)}, ${s.x1.toFixed(2)}]</td>
-                    <td>${s.a.toFixed(6)}</td>
-                    <td>${s.b.toFixed(6)}</td>
-                    <td>${s.c.toFixed(6)}</td>
-                    <td>${s.d.toFixed(6)}</td>
+                    <td>S<sub>${i}</sub></td>
+                    <td>[${s.x0.toFixed(4)}, ${s.x1.toFixed(4)}]</td>
+                    <td>${s.a.toFixed(8)}</td>
+                    <td>${s.b.toFixed(8)}</td>
+                    <td>${s.c.toFixed(8)}</td>
+                    <td>${s.d.toFixed(8)}</td>
                 </tr>
                 `;
         }
@@ -348,6 +954,70 @@ function mostrarCoeficientesSplines(
     document.getElementById(
         "coeficientes-container"
     ).innerHTML = html;
+}
+
+
+// =====================
+// MOSTRAR ECUACIONES FINALES
+// =====================
+
+function mostrarEcuacionesSplines(
+    datos,
+    splines
+) {
+
+    let html =
+        `<div class="splines-ecuaciones">`;
+
+    splines.forEach(
+        (s, i) => {
+
+            const xi =
+                s.x0.toFixed(4);
+
+            const xi1 =
+                s.x1.toFixed(4);
+
+            const a =
+                s.a.toFixed(6);
+
+            const b =
+                s.b.toFixed(6);
+
+            const c =
+                s.c.toFixed(6);
+
+            const d =
+                s.d.toFixed(6);
+
+            html +=
+                `
+                <div class="spline-paso">
+                    <h3>
+                        Spline S<sub>${i}</sub>(x) para x ∈ [${xi}, ${xi1}]
+                    </h3>
+                    <div class="latex-box">
+                        $$S_${i}(x) = ${a} + ${b}(x-${xi}) + ${c}(x-${xi})^2 + ${d}(x-${xi})^3$$
+                    </div>
+                    <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 8px;">
+                        <p style="font-size: 12px; margin: 3px 0;"><strong>Coeficientes:</strong></p>
+                        <p style="font-size: 11px; margin: 2px 0;">a = ${a}</p>
+                        <p style="font-size: 11px; margin: 2px 0;">b = ${b}</p>
+                        <p style="font-size: 11px; margin: 2px 0;">c = ${c}</p>
+                        <p style="font-size: 11px; margin: 2px 0;">d = ${d}</p>
+                    </div>
+                </div>
+                `;
+        }
+    );
+
+    html += `</div>`;
+
+    document.getElementById(
+        "construccion-container"
+    ).innerHTML = html;
+
+    refrescarMathJax();
 }
 
 
@@ -470,4 +1140,137 @@ function (x, splines) {
     }
 
     return null;
+}
+
+
+window.evaluarTrazadorCompleto =
+function (
+    xValor
+) {
+
+    let datos;
+    let splines;
+
+    if (
+        window.trazadoresActuales
+    ) {
+        datos =
+            window.trazadoresActuales.datos;
+
+        splines =
+            window.trazadoresActuales.splines;
+    } else {
+        datos =
+            obtenerDatosTabla();
+
+        datos.sort(
+            (a, b) =>
+                a.x - b.x
+        );
+
+        splines =
+            calcularSplines(
+                datos
+            );
+    }
+
+    const spline =
+        splines.find(s =>
+            xValor >= s.x0 &&
+            xValor <= s.x1
+        );
+
+    if (
+        !spline
+    ) {
+        alert(
+            "El valor de x esta fuera del rango de los datos."
+        );
+        return;
+    }
+
+    const dx =
+        xValor - spline.x0;
+
+    const valor =
+        spline.a +
+        spline.b * dx +
+        spline.c * dx * dx +
+        spline.d * dx * dx * dx;
+
+    const indice =
+        splines.indexOf(
+            spline
+        );
+
+    const html =
+        `
+        <div class="resultado-evaluacion">
+            <h3>Paso 10: Interpolar el valor pedido</h3>
+            <p>El valor ${fmt(xValor)} cae en el intervalo [${fmt(spline.x0)}, ${fmt(spline.x1)}].</p>
+            <div class="latex-box">
+                $$S_${indice}(x)=${fmt(spline.a, 6)}+${fmt(spline.b, 6)}(x-${fmt(spline.x0)})+${fmt(spline.c, 6)}(x-${fmt(spline.x0)})^2+${fmt(spline.d, 6)}(x-${fmt(spline.x0)})^3$$
+                $$S_${indice}(${fmt(xValor)})=${fmt(valor, 8)}$$
+            </div>
+            <p>Resultado: <strong>${fmt(valor, 8)}</strong></p>
+        </div>
+    `;
+
+    document.getElementById(
+        "evaluacion-container"
+    ).innerHTML = html;
+
+    refrescarMathJax();
+}
+
+
+const evaluarPolinomioInterpolacionBase =
+    window.evaluarPolinomio;
+
+window.evaluarPolinomio =
+function () {
+
+    const metodo =
+        document.getElementById(
+            "metodo"
+        )?.value;
+
+    if (
+        metodo !== "trazadores"
+    ) {
+        return evaluarPolinomioInterpolacionBase();
+    }
+
+    const xInput =
+        document.getElementById(
+            "x-evaluar"
+        );
+
+    if (
+        !xInput ||
+        !xInput.value
+    ) {
+        alert(
+            "Ingrese un valor de x"
+        );
+        return;
+    }
+
+    const xValor =
+        parseFloat(
+            xInput.value
+        );
+
+    if (
+        isNaN(xValor)
+    ) {
+        alert(
+            "Valor de x invalido"
+        );
+        return;
+    }
+
+    window.evaluarTrazadorCompleto(
+        xValor
+    );
 }
