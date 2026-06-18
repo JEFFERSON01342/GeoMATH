@@ -93,20 +93,8 @@ function () {
 
     window.datosActuales = datos;
 
-    mostrarTablaOrdenadaTrazadores(
-        datos
-    );
-
     mostrarProcedimientoTrazadoresCompleto(
         datos
-    );
-
-    // =====================
-    // MOSTRAR COEFICIENTES
-    // =====================
-
-    mostrarCoeficientesSplines(
-        splines
     );
 
     // =====================
@@ -115,6 +103,14 @@ function () {
 
     mostrarEcuacionesSplines(
         datos,
+        splines
+    );
+
+    // =====================
+    // MOSTRAR COEFICIENTES
+    // =====================
+
+    mostrarCoeficientesSplines(
         splines
     );
 
@@ -493,30 +489,50 @@ function mostrarSistemaTrazadores(
     const segmentos =
         datos.length - 1;
 
+    const ecuaciones = obtenerEcuacionesSistemaTrazadores(datos);
+    
+    const splines = window.trazadoresActuales.splines;
+
     let html =
         `
         <div class="splines-ecuaciones">
             <div class="paso-card">
-                <h3>Sistema lineal AX=B</h3>
-                <p>Estas son las ecuaciones que se juntan para resolver los coeficientes globales.</p>
-                <div class="latex-box">
-                    $$X=\\begin{bmatrix}${formatearVectorCoeficientesLatex(segmentos)}\\end{bmatrix}$$
-                </div>
-                <div class="trazadores-lista">
+                <h3>Sistema de Ecuaciones Lineal</h3>
+                <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+                    Al combinar todas las condiciones, se obtiene un sistema de ${ecuaciones.length} ecuaciones con ${4 * segmentos} incógnitas:
+                </p>
+                <div class="latex-box" style="background-color: #f5f5f5; padding: 15px; text-align: left;">
+                    $$\\begin{cases}
         `;
 
-    obtenerEcuacionesSistemaTrazadores(
-        datos
-    ).forEach((ecuacion, i) => {
-        html += `
-            <div class="trazador-linea">
-                <strong>E${i + 1}</strong>
-                $$${ecuacion}$$
-            </div>
+    ecuaciones.forEach((ecuacion, i) => {
+        const esUltima = (i === ecuaciones.length - 1);
+        html += `${ecuacion}${!esUltima ? '\\\\' : ''}
         `;
     });
 
     html += `
+                    \\end{cases}$$
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                            <strong>Vector de incógnitas:</strong>
+                        </p>
+                        <div class="latex-box" style="background-color: #fff; padding: 10px;">
+                            $$X = \\begin{bmatrix}${formatearVectorCoeficientesLatex(segmentos)}\\end{bmatrix}$$
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                            <strong>Vector solución X resuelto:</strong>
+                        </p>
+                        <div class="latex-box" style="background-color: #e8f5e9; padding: 10px;">
+                            $$X = \\begin{bmatrix}${formatearVectorSolucion(splines)}\\end{bmatrix}$$
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -527,6 +543,25 @@ function mostrarSistemaTrazadores(
     ).innerHTML = html;
 
     refrescarMathJax();
+}
+
+
+function formatearVectorSolucion(
+    splines
+) {
+
+    const valores = [];
+
+    splines.forEach(s => {
+        valores.push(
+            fmt(s.a, 6),
+            fmt(s.b, 6),
+            fmt(s.c, 6),
+            fmt(s.d, 6)
+        );
+    });
+
+    return valores.join("\\\\");
 }
 
 
@@ -837,13 +872,16 @@ function mostrarProcedimientoTrazadoresCompleto(
             <div class="latex-box">
                 $$S_i'(x)=3a_i x^2+2b_i x+c_i$$
             </div>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Al igualar y simplificar:</p>
             <div class="trazadores-lista">
     `;
 
     for (let i = 1; i < datos.length - 1; i++) {
+        const x = fmt(datos[i].x);
         html += `
             <div class="trazador-linea">
-                $$S_${i - 1}'(${fmt(datos[i].x)})=S_${i}'(${fmt(datos[i].x)})$$
+                <p style="font-size: 12px; margin: 3px 0;">$$3a_{${i-1}} (${x})^2 + 2b_{${i-1}} (${x}) + c_{${i-1}} = 3a_${i} (${x})^2 + 2b_${i} (${x}) + c_${i}$$</p>
+                <p style="font-size: 11px; color: #999; margin-top: 2px;"> que resulta en: $$3(${fmt(datos[i].x * datos[i].x)})a_{${i-1}} + ${fmt(2*datos[i].x)}b_{${i-1}} + c_{${i-1}} = 3(${fmt(datos[i].x * datos[i].x)})a_${i} + ${fmt(2*datos[i].x)}b_${i} + c_${i}$$</p>
             </div>
         `;
     }
@@ -858,13 +896,16 @@ function mostrarProcedimientoTrazadoresCompleto(
             <div class="latex-box">
                 $$S_i''(x)=6a_i x+2b_i$$
             </div>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Al igualar y simplificar:</p>
             <div class="trazadores-lista">
     `;
 
     for (let i = 1; i < datos.length - 1; i++) {
+        const x = fmt(datos[i].x);
         html += `
             <div class="trazador-linea">
-                $$S_${i - 1}''(${fmt(datos[i].x)})=S_${i}''(${fmt(datos[i].x)})$$
+                <p style="font-size: 12px; margin: 3px 0;">$$6a_{${i-1}} (${x}) + 2b_{${i-1}} = 6a_${i} (${x}) + 2b_${i}$$</p>
+                <p style="font-size: 11px; color: #999; margin-top: 2px;"> que resulta en: $$${fmt(6*datos[i].x)}a_{${i-1}} + 2b_{${i-1}} = ${fmt(6*datos[i].x)}a_${i} + 2b_${i}$$</p>
             </div>
         `;
     }
@@ -969,8 +1010,15 @@ function mostrarEcuacionesSplines(
 ) {
 
     let html =
-        `<div class="splines-ecuaciones">`;
+        `<div class="splines-ecuaciones">
+            <h3 style="margin-bottom: 15px;">Sustitución de Valores en los Polinomios</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+                Cada spline se expresa en forma local usando desplazamientos desde x₀:
+            </p>
+        `;
 
+    let ecuacionesGlobales = [];
+    
     splines.forEach(
         (s, i) => {
 
@@ -994,26 +1042,64 @@ function mostrarEcuacionesSplines(
 
             html +=
                 `
-                <div class="spline-paso">
-                    <h3>
-                        Spline S<sub>${i}</sub>(x) para x ∈ [${xi}, ${xi1}]
-                    </h3>
-                    <div class="latex-box">
+                <div class="spline-paso" style="margin-bottom: 20px; padding: 12px; background-color: #f9f9f9; border-left: 4px solid #4CAF50; border-radius: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0;">Polinomio ${i+1}: S<sub>${i}</sub>(x)</h4>
+                        <span style="background-color: #e8f5e9; padding: 4px 8px; border-radius: 3px; font-size: 12px;">x ∈ [${xi}, ${xi1}]</span>
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-top: 8px;"><strong>Forma local:</strong></p>
+                    <div class="latex-box" style="background-color: #fff; margin: 8px 0;">
                         $$S_${i}(x) = ${a} + ${b}(x-${xi}) + ${c}(x-${xi})^2 + ${d}(x-${xi})^3$$
                     </div>
-                    <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 8px;">
-                        <p style="font-size: 12px; margin: 3px 0;"><strong>Coeficientes:</strong></p>
-                        <p style="font-size: 11px; margin: 2px 0;">a = ${a}</p>
-                        <p style="font-size: 11px; margin: 2px 0;">b = ${b}</p>
-                        <p style="font-size: 11px; margin: 2px 0;">c = ${c}</p>
-                        <p style="font-size: 11px; margin: 2px 0;">d = ${d}</p>
+                    <div style="background-color: #fff; padding: 8px; border-radius: 3px; margin-top: 8px;">
+                        <p style="font-size: 11px; margin: 2px 0;"><strong>Coeficientes locales:</strong></p>
+                        <p style="font-size: 11px; margin: 2px 0;">• a = ${a}</p>
+                        <p style="font-size: 11px; margin: 2px 0;">• b = ${b}</p>
+                        <p style="font-size: 11px; margin: 2px 0;">• c = ${c}</p>
+                        <p style="font-size: 11px; margin: 2px 0;">• d = ${d}</p>
                     </div>
                 </div>
                 `;
+            
+            // Guardar ecuación global para después
+            const ag = s.d;
+            const bg = s.c - 3 * s.d * s.x0;
+            const cg = s.b - 2 * s.c * s.x0 + 3 * s.d * s.x0 * s.x0;
+            const dg = s.a - s.b * s.x0 + s.c * s.x0 * s.x0 - s.d * s.x0 * s.x0 * s.x0;
+            
+            ecuacionesGlobales.push({
+                i,
+                ag: ag.toFixed(6),
+                bg: bg.toFixed(6),
+                cg: cg.toFixed(6),
+                dg: dg.toFixed(6)
+            });
         }
     );
 
-    html += `</div>`;
+    html += `
+        <div style="margin-top: 25px; padding: 15px; background-color: #e3f2fd; border-radius: 4px; border-left: 4px solid #2196F3;">
+            <h3 style="margin-top: 0; color: #1565c0;">Forma Global de los Polinomios</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+                Al expandir los polinomios, se obtienen en términos de x (no en términos de (x-x₀)):
+            </p>
+            <div class="trazadores-lista">
+    `;
+
+    ecuacionesGlobales.forEach(eg => {
+        html += `
+                <div class="trazador-linea" style="margin-bottom: 8px;">
+                    <p style="font-size: 12px; margin: 2px 0;">
+                        $$S_${eg.i}(x) = ${eg.ag}x^3 + ${eg.bg}x^2 + ${eg.cg}x + ${eg.dg}$$
+                    </p>
+                </div>
+        `;
+    });
+
+    html += `
+            </div>
+        </div>
+    </div>`;
 
     document.getElementById(
         "construccion-container"
