@@ -79,6 +79,12 @@ function () {
                 "#tabla-sistema tbody"
             );
 
+        // Mostrar etiqueta de método arriba
+        const metodoLabel = document.getElementById("metodo-label");
+        if(metodoLabel){
+            metodoLabel.innerText = "Método: Newton-Raphson (Multivariable)";
+        }
+
         // =====================
         // LIMPIAR
         // =====================

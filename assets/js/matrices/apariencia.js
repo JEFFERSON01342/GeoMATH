@@ -692,6 +692,47 @@ document
                 ).value
             );
 
+        /* ===================== */
+        /* VALIDATION FOR */
+        /* ITERATIVE METHODS */
+        /* ===================== */
+        if(method === "jacobi" || method === "gauss-seidel"){ 
+            const validation = validateSystemConvergence(A, B, method);
+            const resultContainer = document.getElementById("system-result");
+            const validationContainer = document.getElementById("validation-demo-container");
+
+            // Reglas para el método (mostrar arriba de todo)
+            let rulesHTML = '<div class="validation-rules">';
+            rulesHTML += `<h4>Reglas para ${method === 'jacobi' ? 'Jacobi' : 'Gauss-Seidel'}</h4>`;
+            rulesHTML += '<ul>';
+            rulesHTML += '<li>Matriz cuadrada n×n.</li>';
+            rulesHTML += '<li>La diagonal principal no debe contener ceros (a_ii \u2260 0).</li>';
+            rulesHTML += '<li>Preferible: matriz estrictamente diagonalmente dominante por filas: |a_ii| &gt; Σ_{j≠i} |a_ij|. Esto garantiza convergencia.</li>';
+            rulesHTML += '<li>Alternativa: la razón espectral del operador iterativo debe ser &lt; 1 (ρ &lt; 1).</li>';
+            if(method === 'gauss-seidel'){
+                rulesHTML += '<li>Adicional: si la matriz es simétrica definida positiva, la convergencia está garantizada.</li>';
+            }
+            rulesHTML += '</ul></div>';
+
+            // Mostrar reglas y resultados de validación en su propio contenedor (no lo sobreescribe el procedimiento)
+            if(validationContainer){
+                validationContainer.innerHTML = rulesHTML + generateValidationHTML(validation);
+                if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+            } else {
+                // fallback al comportamiento anterior
+                resultContainer.innerHTML = rulesHTML + generateValidationHTML(validation);
+                if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+            }
+
+            // Si hay errores, no continuar
+            if(!validation.canSolve){
+                if(window.MathJax){
+                    MathJax.typesetPromise();
+                }
+                return;
+            }
+        }
+
         if(method === "cramer"){
 
             solveCramer(
@@ -803,3 +844,53 @@ document
 renderMatrix();
 
 renderInitialValues();
+
+/* ===================== */
+/* SHOW RULES ON METHOD CHANGE */
+/* ===================== */
+const systemMethodSelect = document.getElementById("system-method");
+if(systemMethodSelect){
+
+    const showRulesForMethod = (method) => {
+        const resultContainer = document.getElementById("system-result");
+        if(!resultContainer) return;
+
+        if(method === 'jacobi' || method === 'gauss-seidel'){
+            let rulesHTML = '<div class="validation-rules">';
+            rulesHTML += `<h4>Reglas para ${method === 'jacobi' ? 'Jacobi' : 'Gauss-Seidel'}</h4>`;
+            rulesHTML += '<ul>';
+            rulesHTML += '<li>Matriz cuadrada n×n.</li>';
+            rulesHTML += '<li>La diagonal principal no debe contener ceros (a_ii \u2260 0).</li>';
+            rulesHTML += '<li>Preferible: matriz estrictamente diagonalmente dominante por filas: |a_ii| &gt; Σ_{j≠i} |a_ij|. Esto garantiza convergencia.</li>';
+            rulesHTML += '<li>Alternativa: la razón espectral del operador iterativo debe ser &lt; 1 (ρ &lt; 1).</li>';
+            if(method === 'gauss-seidel'){
+                rulesHTML += '<li>Adicional: si la matriz es simétrica definida positiva, la convergencia está garantizada.</li>';
+            }
+            rulesHTML += '</ul></div>';
+
+            // Preserve validation details if already present
+            const existingValidation = resultContainer.querySelector('.validation-container');
+            resultContainer.innerHTML = rulesHTML + (existingValidation ? existingValidation.outerHTML : '');
+
+            if(window.MathJax){
+                MathJax.typesetPromise();
+            }
+        }
+        else{
+            // clear only the rules block if present
+            const existingValidation = resultContainer.querySelector('.validation-container');
+            if(existingValidation){
+                resultContainer.innerHTML = existingValidation.outerHTML;
+            } else {
+                resultContainer.innerHTML = '';
+            }
+        }
+    };
+
+    systemMethodSelect.addEventListener('change', (e) => {
+        showRulesForMethod(e.target.value);
+    });
+
+    // show initial
+    showRulesForMethod(systemMethodSelect.value);
+}
